@@ -17,3 +17,6 @@ deploy:
   github-token: $GH_TOKEN
   target-branch: master
   local-dir: public
+  on:
+    branch: blogging
+
