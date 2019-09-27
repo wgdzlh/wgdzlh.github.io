@@ -2,13 +2,16 @@ sudo: false
 language: node_js
 node_js: 10
 cache: npm
+  - yarn
 #  directories: node_modules
 branches:
   only: blogging  # build blogging branch only
 #install: npm install
 before_script:
-  - git config user.name ${GH_USER}
-  - git config user.email ${GH_EMAIL}
+  - export TZ="Asia/Shanghai"
+  - date
+  - git config user.name "${GH_USER}"
+  - git config user.email "${GH_EMAIL}"
   - sed -i'' "s~git@github.com:~https://${GH_TOKEN}@github.com/~" _config.yml
 script:
   - hexo g  # generate static files
