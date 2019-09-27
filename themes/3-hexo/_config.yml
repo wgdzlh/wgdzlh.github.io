@@ -11,30 +11,30 @@ blog_path: /
 link:
   theme: color # 链接样式，color: 彩色图标  white: 黑白图标
   items:
-    rss: /atom.xml
-    github: https://github.com/yelog
-    facebook: https://www.facebook.com/faker.tops
+    rss: #/atom.xml
+    github: https://github.com/wgdzlh
+    facebook: #https://www.facebook.com/faker.tops
     twitter:
     linkedin:
-    instagram: https://www.facebook.com/faker.tops
-    reddit: https://www.reddit.com/user/yelog/
-    weibo: http://weibo.com/u/2307534817
-    jianshu: https://www.jianshu.com/u/ff56736de7cf
-    zhihu: https://www.zhihu.com/people/jaytp/activities
+    instagram: #https://www.facebook.com/faker.tops
+    reddit: #https://www.reddit.com/user/yelog/
+    weibo: #http://weibo.com/u/2307534817
+    jianshu: #https://www.jianshu.com/u/ff56736de7cf
+    zhihu: #https://www.zhihu.com/people/jaytp/activities
     csdn:
-    oschina: https://my.oschina.net/yelog
+    oschina: #https://my.oschina.net/yelog
     juejin:
-    email: jaytp@qq.com
-    qq: 872336115
-    kugou: https://www.kugou.com/
-    neteasemusic: https://music.163.com/#/user/home?id=88151013
+    email: 13d1101@gmail.com
+    qq: 775764362
+    kugou: #https://www.kugou.com/
+    neteasemusic: #https://music.163.com/#/user/home?id=88151013
 
 ##########多作者模式############
 author:
   on: false
   authors:
-    author1: 阿杰
-    author2: 小马哥
+    author1: 独倾江月
+    author2: Gordon
 ##############################
 
 # 文章分类设置
@@ -74,9 +74,9 @@ menu:
       type: 3  # 跳转类型 3：打开新的tab页
 
 # 文末声明
-article_txt: 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 jaytp@qq.com
+article_txt: 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 13d1101@gmail.com
 
-bottom_text: ©2016-2019 Yelog
+bottom_text: ©2019 独倾江月
 # 自定义页面最下方的站点版权信息
 # 如果不填，则自定义为 ©2017 author (这个author为hexo根目录_config.yml中配置的)
 
@@ -198,7 +198,7 @@ friends:
 
 ##########评论设置#############
 comment:
-  on: false
+  on: true
   type: gitalk  # 评论系统：gitalk、disqus、gentie、gitment,注意：使用时，在下方对应位置进行配置
   comment_count: true  # 文章标题下方显示评论数
   preload_comment: false  # 预加载评论区
@@ -218,11 +218,11 @@ gentie:
   # 网易云跟帖暂时不支持查询评论数，所以启用时，把评论数关掉，上方comment_count: false。
 
 gitalk:
-  githubID: yelog
-  repo: yelog.github.io
-  ClientID:
-  ClientSecret:
-  adminUser: yelog
+  githubID: wgdzlh
+  repo: wgdzlh.github.io
+  ClientID: d03700b1e6bea548272f
+  ClientSecret: ccf5fdc4e0b568fe09cb503aad93439db8b96945
+  adminUser: wgdzlh
   distractionFreeMode: true
   language: zh-CN
   perPage: 10
@@ -239,8 +239,8 @@ gitalk:
 
 
 gitment:
-  owner: yelog
-  repo: yelog.github.io
+  owner: wgdzlh
+  repo: wgdzlh.github.io
   client_id:
   client_secret:
   # gitment : 通过github issue实现的评论系统
