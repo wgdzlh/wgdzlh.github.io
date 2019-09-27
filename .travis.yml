@@ -1,20 +1,18 @@
 sudo: false
 language: node_js
-node_js: stable
-cache:
-  directories:
-    - node_modules
+node_js: --lts
+cache: npm
+#  directories: node_modules
 branches:
-  only:
-    - blogging  # build blogging branch only
-install:
-  - npm install
+  only: blogging  # build blogging branch only
+#install: npm install
 script:
   - hexo g  # generate static files
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GH_TOKEN
+  keep-history: true
   target-branch: master
   local-dir: public
   on:
