@@ -6,7 +6,7 @@ cache:
     - node_modules
 branches:
   only:
-    - master  # build master branch only
+    - blogging  # build blogging branch only
 install:
   - npm install
 script:
