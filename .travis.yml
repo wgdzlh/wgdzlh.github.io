@@ -6,15 +6,11 @@ node_js: 10
 branches:
   only: blogging  # build blogging branch only
 #install: npm install
+before_script:
+  - git config user.name "wgdzlh"
+  - git config user.email "13d1101@gmail.com"
+  - sed -i'' "s~https://github.com/wgdzlh/wgdzlh.github.io.git~https://${GH_TOKEN}@github.com/wgdzlh/wgdzlh.github.io.git~" _config.yml
 script:
   - hexo g  # generate static files
-deploy:
-  provider: pages
-  skip-cleanup: false
-  github-token: $GH_TOKEN
-  keep-history: false
-  target-branch: master
-  local-dir: public
-  on:
-    branch: blogging
+  - hexo d
 

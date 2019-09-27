@@ -78,4 +78,6 @@ theme: 3-hexo
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
+  type: git
+  repo: https://github.com/wgdzlh/wgdzlh.github.io.git
+  branch: master
