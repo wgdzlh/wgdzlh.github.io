@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js: 10
-cache: npm
+#cache: npm
 #  directories: node_modules
 branches:
   only: blogging  # build blogging branch only
@@ -10,7 +10,7 @@ script:
   - hexo g  # generate static files
 deploy:
   provider: pages
-  skip-cleanup: true
+  skip-cleanup: false
   github-token: $GH_TOKEN
   keep-history: false
   target-branch: master
