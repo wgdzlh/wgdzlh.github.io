@@ -15,7 +15,5 @@ deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GH_TOKEN
-  target-branch: gh-pages
+  target-branch: master
   local-dir: public
-  on:
-    branch: master
