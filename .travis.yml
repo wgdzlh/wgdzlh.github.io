@@ -9,7 +9,6 @@ branches:
 #install: npm install
 before_script:
   - export TZ="Asia/Shanghai"
-  - date
   - git config user.name "${GH_USER}"
   - git config user.email "${GH_EMAIL}"
   - sed -i'' "s~git@github.com:~https://${GH_TOKEN}@github.com/~" _config.yml
