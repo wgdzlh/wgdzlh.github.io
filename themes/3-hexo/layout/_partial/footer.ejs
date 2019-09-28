@@ -34,7 +34,10 @@
         /*高亮代码块行号*/
         <%if(theme.highlight && theme.highlight.on&& theme.highlight.lineNum){%>
         $('pre code').each(function(){
-            var lines = $(this).text().split('\n').length - 1, widther='';
+            if ($(this).parent().children().length > 1) {
+                return
+            }
+            var lines = $(this).text().split('\n').length, widther='';
             if (lines>99) {
                 widther = 'widther'
             }
@@ -340,7 +343,7 @@
         top: 0;
         left: 0;
         width: 20px;
-        padding: 0.5em 3px 0.7em 5px;
+        padding: 8px 3px 6px 5px;
         border-right: 1px solid #C3CCD0;
         text-align: right;
         color: <% if(theme.highlight.theme=="brown-paper"){ %>#616161<%}else{%>#AAA<%}%>;
