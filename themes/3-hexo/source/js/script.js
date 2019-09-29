@@ -14,7 +14,7 @@ jQuery.expr[':'].contains_author = function (a, i, m) {
     var tags = jQuery(a).data("author").split(",");
     return $.inArray(m[3], tags) != -1;
 };
-var blog_path = $('.theme_blog_path').val();
+var blog_path = $('.theme_blog_path').val() || '';
 blog_path= blog_path.lastIndexOf("/") === blog_path.length-1?blog_path.slice(0, blog_path.length-1):blog_path;
 
 /*使用pjax加载页面，速度更快，交互更友好*/

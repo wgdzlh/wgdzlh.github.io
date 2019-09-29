@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<%- open_graph({twitter_id: theme.twitter, google_plus: theme.google_plus, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
+<%#- open_graph({twitter_id: theme.twitter, google_plus: theme.google_plus, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
 <% if (theme.rss){ %>
 <link rel="alternate" href="<%- theme.rss %>" title="<%= config.title %>" type="application/atom+xml">
 <% } %>
@@ -27,7 +27,7 @@
 <script src="<%=theme.CDN.nprogres_js%>"></script>
 <%}%>
 <% if (theme.comment.type == 'disqus') {%>
-<script id="dsq-count-scr" src="//<%= theme.disqus.shortname%>.disqus.com/count.js" async></script>
+<script id="dsq-count-scr" src="//<%= theme.disqus.shortname %>.disqus.com/count.js" async></script>
 <% } %>
 <% if (theme.comment.type == 'gitalk') {%>
 <script src="<%= theme.CDN.jquery_cookie %>" ></script>

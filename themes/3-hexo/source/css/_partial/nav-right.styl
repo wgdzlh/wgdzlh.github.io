@@ -24,7 +24,7 @@
       width: 100%;
       .cross
         position absolute
-        top 36px
+        top 32px
         right 129px
         display none
         &:hover
@@ -32,9 +32,9 @@
         &:before
           content "\ea0f"
       .search
-        width 250px
+        width 215px
         margin-top 12px
-        padding 20px 0 0 20px
+        padding 13px 0 0 20px
         color #383636
         font-size 18px
         font-family inherit
@@ -55,10 +55,10 @@
             -webkit-transition border .4s,box-shadow .4s,background-color 1.2s
             transition border .4s,box-shadow .4s,background-color 1.2s
           &:checked +#tagsWitchIcon:after
-            left 27px
+            left 17px
             content ''
-            width 14px
-            height 14px
+            width 16px
+            height 16px
             position absolute
             top 10px
             -webkit-transform translateY(-50%)
@@ -69,8 +69,8 @@
             transition left .2s
             cursor pointer
         #tagsWitchIcon
-          width 40px
-          height 14px
+          width 32px
+          height 16px
           position relative
           z-index 2
           border 0
@@ -78,10 +78,10 @@
           -webkit-appearance none
           outline 0
           &:after{
-            left: 0;
+            left: 1px;
             content: '';
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             position: absolute;
             top: 10px;
             -webkit-transform: translateY(-50%);
@@ -96,8 +96,8 @@
           }
           &:before {
             content: '';
-            width: 40px;
-            height: 14px;
+            width: 32px;
+            height: 16px;
             border: 1px solid #bdcabc;
             background-color: #fdfdfd;
             border-radius: 20px;
