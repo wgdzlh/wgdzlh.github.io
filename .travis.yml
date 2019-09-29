@@ -13,5 +13,6 @@ before_script:
   - sed -i'' "s~git@github.com:~https://${GH_TOKEN}@github.com/~" _config.yml
 script:
   - hexo g > /dev/null  # generate static files
+  - find public -type f -name *.html -exec sed -i '/^[[:space:]]*$/d' {} +
   - hexo d > /dev/null
 
