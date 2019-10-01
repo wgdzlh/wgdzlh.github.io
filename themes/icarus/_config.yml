@@ -166,14 +166,6 @@ widgets:
         position: left
     -
         # Widget name
-        type: links
-        # Where should the widget be placed, left or right
-        position: right
-        # Links to be shown in the links widget
-        links:
-            wgdzlh: 'https://github.com/wgdzlh'
-    -
-        # Widget name
         type: category
         # Where should the widget be placed, left or right
         position: left
@@ -197,6 +189,14 @@ widgets:
         type: tag
         # Where should the widget be placed, left or right
         position: right
+    -
+        # Widget name
+        type: links
+        # Where should the widget be placed, left or right
+        position: right
+        # Links to be shown in the links widget
+        links:
+            wgdzlh: 'https://github.com/wgdzlh'
 # Other plugin settings
 plugins:
     # Enable page animations
