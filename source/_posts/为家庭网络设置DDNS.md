@@ -4,7 +4,7 @@ toc: true
 date: 2019-10-01 17:19:00
 updated: 2019-10-01 17:19:00
 categories: 折腾
-tags: [家庭组网 DDNS shell]
+tags: 家庭组网, DDNS, shell
 thumbnail: /gallery/15699387480111.jpg
 ---
 
