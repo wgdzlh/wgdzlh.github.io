@@ -87,9 +87,9 @@ echo -e "To: <receiver email>\nFrom: <your email>\nSubject:<title>\n\n<content>"
 
 
 可以看到，这里对邮件标题进行了规则匹配，只处理标题以特定字符串结尾的邮件。
-后面处理步骤应该很清晰了：拷贝到本地特定收件文件夹、设已读、加颜色旗标、**运行AppleScript**。这里的`AppleScript`就是我们自动更新hosts的地方了，内容可参考：
+后面处理步骤应该很清晰了：拷贝到本地特定收件文件夹、设已读、加颜色旗标、运行`AppleScript`。这里的`AppleScript`就是我们自动更新hosts的地方了，内容可参考：
 
-``` bash
+``` applescript
 delay 3tell application "Mail"	set theMessages to messages of mailbox "wgdzlhs_ubt" --whose read status is false	if theMessages is not {} then		set aMessage to first item of theMessages		set msgContent to content of aMessage		--log "mail of ip info: " & msgContent & date sent of aMessage		tell me to set wgdzlhs_ubt_ip to do shell script "echo " & quoted form of msgContent & " | grep -Eo '[0-9]{1,3}(\\.[0-9]{1,3}){3}'"		--log "wgdzlhs-ubt ip: " & wgdzlhs_ubt_ip		if length of wgdzlhs_ubt_ip > 0 then			set pattern to "s/^.+(wgdzlhs-ubt)/" & wgdzlhs_ubt_ip & " \\1/"			--log "sed pattern: " & pattern			tell me to do shell script "sed -Ei'_bak' " & quoted form of pattern & " /etc/hosts" with administrator privileges		end if		--move theMessages to mailbox "Trash"		repeat with oneMessage in theMessages			delete oneMessage		end repeat	end if	--log "done."end tell
 ```
 可以看到，AppleScript是一种近乎伪代码的风格，读起来应该比较易懂，这里就不做解释了。值得注意的是脚本中的`sed`命令，在编辑`hosts`时会对原文件进行备份，并需要提升权限（提示用户输入密码）。
