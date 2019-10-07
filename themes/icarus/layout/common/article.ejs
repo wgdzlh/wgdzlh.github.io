@@ -11,9 +11,13 @@
         <% if (post.layout != 'page') { %>
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="<%= date_xml(post.date) %>"><%= date(post.date) %></time>
+                <time class="level-item has-text-grey" datetime="<%= date_xml(post.date) %>"><i class="far fa-calendar-alt">&nbsp;</i><%= date(post.date) %></time>
+                <% if (post.updated && post.updated > post.date) { %>
+                <time class="level-item has-text-grey is-hidden-mobile" datetime="<%= date_xml(post.updated) %>"><i class="far fa-calendar-check">&nbsp;</i><%= date(post.updated) %></time>
+                <% } %>
                 <% if (post.categories && post.categories.length) { %>
                 <div class="level-item">
+                <i class="far fa-folder-open"></i>&nbsp;
                 <%- list_categories(post.categories, {
                     class: 'has-link-grey ',
                     show_count: false,
@@ -24,6 +28,7 @@
                 <% } %>
                 <% if (!has_config('article.readtime') || get_config('article.readtime') === true) { %>
                 <span class="level-item has-text-grey">
+                    <i class="far fa-clock"></i>&nbsp;
                     <% const words = word_count(post._content); %>
                     <% const time = duration((words / 150.0) * 60, 'seconds') %>
                     <%= `${ time.locale(get_config('language', 'en')).humanize() } ${ __('article.read')} (${ __('article.about') } ${ words } ${ __('article.words') })` %>
@@ -52,11 +57,12 @@
         <div class="level is-size-7 is-uppercase">
             <div class="level-start">
                 <div class="level-item">
-                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <i class="fas fa-tags has-text-grey"></i>&nbsp;
                     <%- list_tags(post.tags, {
                         class: 'has-link-grey ',
                         show_count: false,
-                        style: 'link'
+                        style: 'link',
+                        separator: ',&nbsp;'
                     }) %>
                 </div>
             </div>
