@@ -5,7 +5,7 @@ date: 2019-10-03 01:21:12
 updated: 2019-10-06 19:57:13
 categories: 折腾
 tags: [家庭组网, WOL, shell, iptables, TCP]
-thumbnail:
+thumbnail: /gallery/triStates.png
 ---
 
 在完成[家庭组网](/2019/09/29/我的家庭网络架设日志/)后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷方面的应用。
