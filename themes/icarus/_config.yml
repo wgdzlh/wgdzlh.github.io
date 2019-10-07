@@ -25,11 +25,11 @@ open_graph:
 navbar:
     # Navigation bar menu links
     menu:
-        Home: /
-        Archives: /archives
-        Categories: /categories
-        Tags: /tags
-        About: /about
+        主页: /
+        归档: /archives
+        分类: /categories
+        标签: /tags
+        关于: /about
     # Navigation bar links to be shown on the right
     links:
         #Download on GitHub:
@@ -138,7 +138,7 @@ widgets:
         # Title of the author to be shown in the profile widget
         author_title:
         # Author's current location to be shown in the profile widget
-        location: China
+        location:
         # Path or URL to the avatar to be shown in the profile widget
         avatar: /images/avatar.png
         # Email address for the Gravatar to be shown in the profile widget
