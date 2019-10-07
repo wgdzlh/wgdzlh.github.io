@@ -77,7 +77,7 @@ echo -e "To: <receiver email>\nFrom: <your email>\nSubject:<title>\n\n<content>"
 ### 电脑端自动更新hosts
 因没有用到DDNS，我们可以把从邮件获取到的IP写入电脑本地的hosts文件中，以便访问该IP。
 
-对于MacOS而言，系统集成的邮件客户端有个隐藏的强大功能，可以在收到新邮件时，进行规则匹配，通过脚本自动更新系统hosts，从而省掉了手动编辑的麻烦。这里的脚本就是苹果独有的AppleScript。
+对于MacOS而言，系统集成的邮件客户端有个隐藏的强大功能，可以在收到新邮件时，进行规则匹配，通过脚本自动更新系统hosts，从而省掉了手动编辑的麻烦。这里的脚本就是苹果独有的`AppleScript`。
 
 首先，确定/etc/hosts文件中有自定义的hostname：
 ![](/gallery/15700201259043.jpg)
@@ -92,8 +92,8 @@ echo -e "To: <receiver email>\nFrom: <your email>\nSubject:<title>\n\n<content>"
 ``` applescript
 delay 3tell application "Mail"	set theMessages to messages of mailbox "wgdzlhs_ubt" --whose read status is false	if theMessages is not {} then		set aMessage to first item of theMessages		set msgContent to content of aMessage		--log "mail of ip info: " & msgContent & date sent of aMessage		tell me to set wgdzlhs_ubt_ip to do shell script "echo " & quoted form of msgContent & " | grep -Eo '[0-9]{1,3}(\\.[0-9]{1,3}){3}'"		--log "wgdzlhs-ubt ip: " & wgdzlhs_ubt_ip		if length of wgdzlhs_ubt_ip > 0 then			set pattern to "s/^.+(wgdzlhs-ubt)/" & wgdzlhs_ubt_ip & " \\1/"			--log "sed pattern: " & pattern			tell me to do shell script "sed -Ei'_bak' " & quoted form of pattern & " /etc/hosts" with administrator privileges		end if		--move theMessages to mailbox "Trash"		repeat with oneMessage in theMessages			delete oneMessage		end repeat	end if	--log "done."end tell
 ```
-可以看到，AppleScript是一种近乎伪代码的风格，读起来应该比较易懂，这里就不做解释了。值得注意的是脚本中的`sed`命令，在编辑`hosts`时会对原文件进行备份，并需要提升权限（提示用户输入密码）。
-另外有个小技巧，在编写AppleScript时，如果需进行测试，其实输出log有点多余（故上面代码中的log命令都被注释掉了），在Script Editor应用中，点击运行后，有一栏能显示出各行命令的实际执行代码及其返回结果，如下图：
+可以看到，`AppleScript`是一种近乎伪代码的风格，读起来应该比较易懂，这里就不做解释了。值得注意的是脚本中的`sed`命令，在编辑`hosts`时会对原文件进行备份，并需要提升权限（提示用户输入密码）。
+另外有个小技巧，在编写`AppleScript`时，如果需进行测试，输出log其实有点多余（故上面代码中的`log`命令都被注释掉了），在Script Editor应用中，点击运行后，有一栏能显示出各行命令的实际执行代码及其返回结果，如下图：
 ![](/gallery/15700195025400.jpg)
 
 `AppleScript`正常运行后，我们的hosts应该就更新好了，测试一下能否ping通家里的路由器：
