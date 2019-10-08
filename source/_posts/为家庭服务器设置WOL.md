@@ -39,7 +39,7 @@ thumbnail: /gallery/triStates.png
 ``` bash
 sudo systemctl suspend
 ```
-通过`sudo`提权后，系统当然会乖乖去睡了。注意，可以睡眠不代表也能正常睡眠，这时应测试一下唤醒情况。
+通过`sudo`提权后，系统当然会乖乖去睡了。注意，可以睡眠不代表也能正常从睡眠中恢复，这时应测试一下唤醒情况。
 
 PS：若你和我一样用的是N家的独显，在唤醒时如果发现系统当机了，内核panic，有可能是显卡驱动造成的，试着重装一下最新兼容驱动或许能解决。
 PPS：N卡驱动可能只在图形界面可以正常睡眠唤醒，如果将启动等级设为命令行界面，即`text mode`，不运行`X server`（少跑几十个进程），唤醒时依然会当机黑屏。这个至今没有妥善解决，后面若找到方法会分享出来（很有可能这是现有驱动本身的依赖特点，根本没有解决方法，除非发生小概率事件：未来新驱动支持`text mode`的睡眠唤醒）。
@@ -126,7 +126,7 @@ iptables -N forwarding_log_chain
 iptables -A forwarding_rule -j forwarding_log_chain
 
 # add log rules all HTTP/S SYN (can use --syn instead of --tcp-flags) and FIN-ACK events
-iptables -A forwarding_log_chain -p tcp -d <your server's LAN ip> --tcp-flags ALL SYN -j LOG --log-prefix "MY_PC_SYN:"
+iptables -A forwarding_log_chain -p tcp -d <LAN ip of the server> --tcp-flags ALL SYN -j LOG --log-prefix "MY_PC_SYN:"
 ```
 这些命令可以写入OpenWrt的防火墙自定义规则中，在防火墙每次启动时自动运行。
 
