@@ -8,7 +8,7 @@ tags: [家庭组网, WOL, shell, iptables, TCP]
 thumbnail: /gallery/triStates.png
 ---
 
-在完成[家庭组网](/2019/09/29/我的家庭网络架设日志/)后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷性方面的应用。
+在完成[家庭组网](/2019/09/29/how-do-i-construct-my-household-network/)后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷性方面的应用。
 <!-- more -->
 ## 问题的引出
 最近，在我重新启用家里的台式机，作为开发团队的`GitLab`服务器时，一个问题很快显现出来。
@@ -16,7 +16,7 @@ thumbnail: /gallery/triStates.png
 首先，之所以需要将家里的电脑当作服务器来用，主要有以下几点原因：
 
 * 穷，买不起配置较好的VPS（`GitLab`对配置有要求）
-* 家里路由器有公网IP，且已[配好DDNS](/2019/10/01/为家庭网络设置DDNS/)
+* 家里路由器有公网IP，且已[配好DDNS](/2019/10/01/apply-ddns-to-my-household-network/)
 * 台式机闲置已久，系统是`Ubuntu 1604`，可充当服务器
 * 偶尔需要登录台式机，跑点测试，玩一下`TensorFlow`啥的（台式机有老独显，可加点速）
 
@@ -104,7 +104,7 @@ $ sudo ethtool eno1
 $ etherwake -b -i <LAN interface name> <ubuntu MAC address>
 ```
 测试是否可以成功唤醒Ubuntu。
-*注：除了这种`etherwake`命令方式，还有其他各种WOL工具可以使用。若从外网唤醒，需要在路由器上配置好端口转发，但此种转发方式的弊端是，只能在Ubuntu直接连在路由器某LAN网口上，且配置好静态`ARP`绑定的条件下才行，否则会因`ARP`老化而无法成功转发magic唤醒包（例如像[这里](/2019/09/29/我的家庭网络架设日志/)的网络拓扑，路由器与Ubuntu Desktop PC之间有其他网桥设备）。所以，最好直接从路由器发出广播型的magic包，不管内网的二层拓扑怎样，Ubuntu都能正常收到而被唤醒。故上面`etherwake`命令里有`-b`参数，即发出`broadcast`型magic包。*
+*注：除了这种`etherwake`命令方式，还有其他各种WOL工具可以使用。若从外网唤醒，需要在路由器上配置好端口转发，但此种转发方式的弊端是，只能在Ubuntu直接连在路由器某LAN网口上，且配置好静态`ARP`绑定的条件下才行，否则会因`ARP`老化而无法成功转发magic唤醒包（例如像[这里](/2019/09/29/how-do-i-construct-my-household-network/)的网络拓扑，路由器与Ubuntu Desktop PC之间有其他网桥设备）。所以，最好直接从路由器发出广播型的magic包，不管内网的二层拓扑怎样，Ubuntu都能正常收到而被唤醒。故上面`etherwake`命令里有`-b`参数，即发出`broadcast`型magic包。*
 
 #### 自动唤醒
 手动唤醒测试通过后，下一步就是将其自动化。如何在需要连接Ubuntu时，自动将其唤醒？简单的端口转发当然无法做到这个，我们需要的是一种路由器可以察觉到的连接信号。经过搜索，我找到了一种很好的解决流程：
