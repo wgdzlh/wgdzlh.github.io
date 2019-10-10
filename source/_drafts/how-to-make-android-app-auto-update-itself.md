@@ -1,10 +1,10 @@
 ---
-title: how to make android app auto update itself
+title: 给安卓APP加入自动更新功能
 toc: true
 date: 2019-10-09 20:22:04
 updated: 2019-10-09 20:22:04
-categories:
-tags:
+categories: 安卓开发
+tags: [Java, Android]
 thumbnail:
 ---
 

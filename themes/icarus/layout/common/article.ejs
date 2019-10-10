@@ -11,9 +11,9 @@
         <% if (post.layout != 'page') { %>
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="<%= date_xml(post.date) %>"><i class="far fa-calendar-alt">&nbsp;</i><%= date(post.date) %></time>
+                <time class="level-item has-text-grey" datetime="<%= date_xml(post.date) %>"><i class="far fa-calendar-alt"></i>&nbsp;<%= date(post.date) %></time>
                 <% if (post.updated && post.updated > post.date) { %>
-                <time class="level-item has-text-grey is-hidden-mobile" datetime="<%= date_xml(post.updated) %>"><i class="far fa-calendar-check">&nbsp;</i><%= date(post.updated) %></time>
+                <time class="level-item has-text-grey is-hidden-mobile" datetime="<%= date_xml(post.updated) %>"><i class="far fa-calendar-check"></i>&nbsp;<%= date(post.updated) %></time>
                 <% } %>
                 <% if (post.categories && post.categories.length) { %>
                 <div class="level-item">
@@ -36,7 +36,7 @@
                 <% } %>
                 <% if (!index && (has_config('plugins.busuanzi') ? get_config('plugins.busuanzi') : false)) { %>
                 <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
-                    <i class="far fa-eye"></i>
+                    <i class="far fa-eye"></i>&nbsp;
                     <%- _p('plugin.visit', '<span id="busuanzi_value_page_pv">0</span>') %>
                 </span>
                 <% } %>

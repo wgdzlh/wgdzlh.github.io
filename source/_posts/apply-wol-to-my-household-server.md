@@ -111,7 +111,7 @@ $ etherwake -b -i <LAN interface name> <ubuntu MAC address>
 
 1. 某客户端在外网发出连接Ubuntu的TCP第一次握手（`SYN=1 ACK=0`）；
 2. 路由器`iptables`转发时，识别出该数据包，发出特定信号；
-3. 路由器上某进程接收到该信号，运行`etherwake`命令，发出二层广播`magic`包唤醒Ubuntu。
+3. 路由器上某进程接收到该信号，运行`etherwake`命令，发出二层广播magic包唤醒Ubuntu。
 
 ##### 识别TCP第一次握手
 利用`iptables`监听跳转，可识别特定TCP第一次握手包，发出相应信号。这里的*信号*是写入特殊字符串开头的系统日志，其他进程可以通过实时读取日志来识别这个*信号*。之所以采取这种迂回方式，主要原因是`iptables`无法直接启动其他命令或脚本。
