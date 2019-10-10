@@ -2,29 +2,28 @@
 title: 使用自签名证书给安卓APP提供HTTPS后端服务
 toc: true
 date: 2019-10-09 19:57:52
-updated: 2019-10-09 19:57:52
+updated: 2019-10-10 23:57:53
 categories: 安卓开发
 tags: [Java, Android]
 thumbnail: /gallery/https_vs_http.jpg
 
 ---
 
-在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用https安全链接。本文介绍了一种使用自签名证书的安卓https链接方式。
+在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用Https安全链接。本文介绍了一种使用自签名证书的安卓Https链接方式。
 <!-- more -->
 
 ## 需求背景
 
-关于Http与Https的区别，大家应该很熟悉，就不再赘述了。苹果iOS在好几年前就已强推Https，而安卓这边紧随其后，默认开发配置下也要求App只能使用Https，虽说目前最新版（9.0）仍然可以在manifest里设置一下规避掉，也只是过渡期的权宜之计罢了。
+关于Http与Https的区别，大家应该很熟悉，就不再赘述了。苹果iOS在好几年前就已强推Https，而安卓这边紧随其后，默认开发配置下也要求App只能使用Https，虽说目前最新版（10.0）仍然可以在manifest里设置一下规避掉，也只是过渡期的权宜之计罢了。
 
 Https其实大家都想上，但证书问题却是个老大难。一方面，后端服务器可能没有域名，只有个IP，无法自由申请免费证书（可以[给IP申请证书](https://segmentfault.com/a/1190000018370382)，但有很多限制，且可能收费）。另一方面，自签名证书很方便，但却没经过授权机构根证书签名，默认情况下得不到安卓系统的信任。因而，市面上仍有大量App使用不安全的Http协议连接Web后端服务。
 
 ## 解决方法
 通过多方搜索查找，综合[官方文档](https://developer.android.com/training/articles/security-ssl#UnknownCa)，及[相关博客](https://jebware.com/blog/?p=340)，可以使用以下两步，验证自签名CA证书。另外，需注意生成证书时，应加入Subject Alternative Name参数，域名或者IP都行，具体参考这个[SO回答](https://stackoverflow.com/a/8744717/8578416)。
 
-PS：代码中的cer证书放入项目asset文件夹，获取方式可以参考[相关博客](https://jebware.com/blog/?p=340)，但不需要转为pem格式。
+PS：下面代码中的`server.cer`证书放入项目assets文件夹，获取方式可以参考[相关博客](https://jebware.com/blog/?p=340)，但不需要转为pem格式。
 
 ### 自定义证书验证器TrustManager
-
 
 ``` java
 package your.project.io;
