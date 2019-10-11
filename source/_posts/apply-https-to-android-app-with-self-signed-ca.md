@@ -90,13 +90,12 @@ class MyTrustManager {
 
 ``` java
 static final OkHttpClient client = new OkHttpClient.Builder()
-            .sslSocketFactory(MyTrustManager.getSocketFactory(), MyTrustManager.getTrustManager())
-            // not safe, should specify subject alt name in server's ca.
-            //.hostnameVerifier((hostname, session) -> Constants.Net.HOST.equals(hostname))
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS).build();
-
+        .sslSocketFactory(MyTrustManager.getSocketFactory(), MyTrustManager.getTrustManager())
+        // not safe, should specify subject alt name in server's ca.
+        //.hostnameVerifier((hostname, session) -> Constants.Net.HOST.equals(hostname))
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(20, TimeUnit.SECONDS)
+        .readTimeout(20, TimeUnit.SECONDS).build();
 ```
 
 不出意外的话，App端应该可以正常用Https访问你的Web服务了。
