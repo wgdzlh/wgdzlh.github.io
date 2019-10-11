@@ -6,7 +6,6 @@ updated: 2019-10-10 23:57:53
 categories: 安卓开发
 tags: [Java, Android]
 thumbnail: /gallery/https_vs_http.jpg
-
 ---
 
 在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用Https安全链接。本文介绍了一种使用自签名证书的安卓Https链接方式。
