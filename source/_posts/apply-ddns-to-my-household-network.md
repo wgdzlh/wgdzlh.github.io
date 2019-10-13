@@ -2,7 +2,7 @@
 title: 为家庭网络设置DDNS
 toc: true
 date: 2019-10-01 17:19:00
-updated: 2019-10-02 22:59:00
+updated: 2019-10-13 13:51:00
 categories: 折腾
 tags: [家庭组网, DDNS, shell, AppleScript]
 thumbnail: /gallery/15699387480111.jpg
@@ -130,7 +130,9 @@ curl https://api.dynu.com/v2/dns -H "accept: application/json" -H "API-Key: <you
 下面的命令在每次路由器发生拨号行为，并检测出WAN端口IP发生变化后，即需运行：
 
  ``` bash
-curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" -H "API-Key: <your API Key>" -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"<your new ip>\"}"
+curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" \
+  -H "API-Key: <your API Key>" \
+  -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"<your new ip>\"}"
 ```
 
 IP更新后，可用`ping`测试一番，看是否正常。具体所用的shell脚本请见文末[附录](#附录)。通过路由器[hotplug功能](#hotplug脚本)，该脚本可如上面第3步里的那样，按需运行，不用起`cron`。
@@ -147,15 +149,21 @@ smail() {
 }
 
 ddns() {
-  curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" -H "API-Key: <your API Key>" -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"${1}\"}" &> /dev/null
+  curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" \
+    -H "API-Key: <your API Key>" \
+    -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"${1}\"}" &> /dev/null
 }
 
+sleep 1
 cd /tmp
 if [ -f "current_ip.log" ]; then
   old_ip=$(cat current_ip.log)
 fi
 new_ip=$(ifconfig pppoe-wan | sed -En 's/.*addr:([0-9.]+).*/\1/p')
 echo ${new_ip} > current_ip.log
-[ "${new_ip}" != "${old_ip}" ] && smail <your email> "$(date +'%Y%m%d %H:%M:%S') my ip updated --from wgdzlhs-ubt" ${new_ip} && ddns ${new_ip}
+if [ "${new_ip}" != "${old_ip}" ]; then
+  smail <your email> "$(date +'%Y%m%d %H:%M:%S') my ip updated --from wgdzlhs-ubt" ${new_ip}
+  ddns ${new_ip}
+fi
 ```
 
