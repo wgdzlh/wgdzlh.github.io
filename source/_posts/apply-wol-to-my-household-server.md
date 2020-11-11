@@ -53,11 +53,11 @@ PPS：N卡驱动可能只在图形界面可以正常睡眠唤醒，如果将启�
 ``` bash
 #!/bin/bash
 
-user_proc_num=$(ps -fU <your username> | grep -vE "systemd|sd-pam|ps -fU|wc -l" | wc -l)
+user_proc_num=$(ps -fU [your username] | grep -vE "systemd|sd-pam|ps -fU|wc -l" | wc -l)
 if [ ${user_proc_num} -gt 1 ]; then
   active="true"
 else
-  net_con_num=$(netstat -ant | grep -E "<service socket 1>|<service socket 2>|..." | grep -v "LISTEN" | wc -l)
+  net_con_num=$(netstat -ant | grep -E "[service socket 1]|[service socket 2]|..." | grep -v "LISTEN" | wc -l)
   if [ ${net_con_num} -gt 0 ]; then
     active="true"
   fi
@@ -101,7 +101,7 @@ $ sudo ethtool eno1
 在Ubuntu上`systemctl suspend`后，SSH登入路由器，运行以下命令：
 
 ``` bash
-$ etherwake -b -i <LAN interface name> <ubuntu MAC address>
+$ etherwake -b -i [LAN interface name] [ubuntu MAC address]
 ```
 测试是否可以成功唤醒Ubuntu。
 *注：除了这种`etherwake`命令方式，还有其他各种WOL工具可以使用。若从外网唤醒，需要在路由器上配置好端口转发，但此种转发方式的弊端是，只能在Ubuntu直接连在路由器某LAN网口上，且配置好静态`ARP`绑定的条件下才行，否则会因`ARP`老化而无法成功转发magic唤醒包（例如像[这里](/2019/09/29/how-do-i-construct-my-household-network/)的网络拓扑，路由器与Ubuntu Desktop PC之间有其他网桥设备）。所以，最好直接从路由器发出广播型的magic包，不管内网的二层拓扑怎样，Ubuntu都能正常收到而被唤醒。故上面`etherwake`命令里有`-b`参数，即发出`broadcast`型magic包。*
@@ -126,7 +126,7 @@ iptables -N forwarding_log_chain
 iptables -A forwarding_rule -j forwarding_log_chain
 
 # add log rules all HTTP/S SYN (can use --syn instead of --tcp-flags) and FIN-ACK events
-iptables -A forwarding_log_chain -p tcp -d <LAN ip of the server> --tcp-flags ALL SYN -j LOG --log-prefix "MY_PC_SYN:"
+iptables -A forwarding_log_chain -p tcp -d [LAN ip of the server] --tcp-flags ALL SYN -j LOG --log-prefix "MY_PC_SYN:"
 ```
 这些命令可以写入OpenWrt的防火墙自定义规则中，在防火墙每次启动时自动运行。
 
@@ -148,7 +148,7 @@ epoch=$(cat ${outfile} 2>/dev/null || echo 0)
 
 if [ ${epoch} -eq 0 ]; then
   if [ ${interval} -le 6 ]; then
-    etherwake -b -i <LAN interface name> <ubuntu MAC address>
+    etherwake -b -i [LAN interface name] [ubuntu MAC address]
     echo 2 > ${outfile}
   else
     echo 1 > ${outfile}
@@ -156,7 +156,7 @@ if [ ${epoch} -eq 0 ]; then
 else
   if [ ${interval} -le 6 ]; then
     if [ ${epoch} -eq 1 ]; then
-      etherwake -b -i <LAN interface name> <ubuntu MAC address>
+      etherwake -b -i [LAN interface name] [ubuntu MAC address]
       echo 2 > ${outfile}
     fi
   elif [ ${epoch} -eq 2 ]; then

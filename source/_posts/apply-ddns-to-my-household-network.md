@@ -10,7 +10,7 @@ thumbnail: /gallery/15699387480111.jpg
 
 在家中网络架好以后，下一步就是要方便的随时访问家中的设备了。而即使申请到公网IP，一般家用级IP却不固定，给我们访问造成了麻烦。本博客介绍了解决这个问题的若干途径。
 <!-- more -->
-*若不想看我前面瞎BB的回忆录，可直接跳到下面最终的[DDNS方法](#DDNS方法)*
+
 ## 非DDNS方法（消息通知）
 这种方法是我最早在2017年时采用的，因当时国内比较知名的DDNS服务商，如花生壳啥的，已陆续不提供免费DDNS服务，故只能另辟蹊径，通过消息通知的方式来获取家网IP。
 
@@ -57,20 +57,20 @@ ifconfig pppoe-wan | sed -En 's/.*addr:([0-9.]+).*/\1/p'
 邮箱设置完成后，在路由器的ssmtp设置文件`/etc/ssmtp/ssmtp.conf`加入以下配置：
 
 ``` ini
-root=<your email>
+root=[your email]
 mailhub=smtp.163.com
 rewriteDomain=163.com
 hostname=openwrt
 FromLineOverride=YES
 AuthUser=wgdzlh
-AuthPass=<your password>
+AuthPass=[your password]
 UseTLS=YES
 UseSTARTTLS=YES
 ```
 之后就能使用`ssmtp`命令了：
 
 ``` bash
-echo -e "To: <receiver email>\nFrom: <your email>\nSubject:<title>\n\n<content>" | ssmtp <your email>
+echo -e "To: [receiver email]\nFrom: [your email]\nSubject:[title]\n\n[content]" | ssmtp [your email]
 ```
 测试一下能否正常发邮件吧。
 
@@ -90,7 +90,27 @@ echo -e "To: <receiver email>\nFrom: <your email>\nSubject:<title>\n\n<content>"
 后面处理步骤应该很清晰了：拷贝到本地特定收件文件夹、设已读、加颜色旗标、运行`AppleScript`。这里的`AppleScript`就是我们自动更新hosts的地方了，内容可参考：
 
 ``` applescript
-delay 3tell application "Mail"	set theMessages to messages of mailbox "wgdzlhs_ubt" --whose read status is false	if theMessages is not {} then		set aMessage to first item of theMessages		set msgContent to content of aMessage		--log "mail of ip info: " & msgContent & date sent of aMessage		tell me to set wgdzlhs_ubt_ip to do shell script "echo " & quoted form of msgContent & " | grep -Eo '[0-9]{1,3}(\\.[0-9]{1,3}){3}'"		--log "wgdzlhs-ubt ip: " & wgdzlhs_ubt_ip		if length of wgdzlhs_ubt_ip > 0 then			set pattern to "s/^.+(wgdzlhs-ubt)/" & wgdzlhs_ubt_ip & " \\1/"			--log "sed pattern: " & pattern			tell me to do shell script "sed -Ei'_bak' " & quoted form of pattern & " /etc/hosts" with administrator privileges		end if		--move theMessages to mailbox "Trash"		repeat with oneMessage in theMessages			delete oneMessage		end repeat	end if	--log "done."end tell
+delay 3
+tell application "Mail"
+	set theMessages to messages of mailbox "wgdzlhs_ubt" --whose read status is false
+	if theMessages is not {} then
+		set aMessage to first item of theMessages
+		set msgContent to content of aMessage
+		--log "mail of ip info: " & msgContent & date sent of aMessage
+		tell me to set wgdzlhs_ubt_ip to do shell script "echo " & quoted form of msgContent & " | grep -Eo '[0-9]{1,3}(\\.[0-9]{1,3}){3}'"
+		--log "wgdzlhs-ubt ip: " & wgdzlhs_ubt_ip
+		if length of wgdzlhs_ubt_ip > 0 then
+			set pattern to "s/^.+(wgdzlhs-ubt)/" & wgdzlhs_ubt_ip & " \\1/"
+			--log "sed pattern: " & pattern
+			tell me to do shell script "sed -Ei'_bak' " & quoted form of pattern & " /etc/hosts" with administrator privileges
+		end if
+		--move theMessages to mailbox "Trash"
+		repeat with oneMessage in theMessages
+			delete oneMessage
+		end repeat
+	end if
+	--log "done."
+end tell
 ```
 可以看到，`AppleScript`是一种近乎伪代码的风格，读起来应该比较易懂，这里就不做解释了。值得注意的是脚本中的`sed`命令，在编辑`hosts`时会对原文件进行备份，并需要提升权限（提示用户输入密码）。
 另外有个小技巧，在编写`AppleScript`时，如果需进行测试，输出log其实有点多余（故上面代码中的`log`命令都被注释掉了），在Script Editor应用中，点击运行后，有一栏能显示出各行命令的实际执行代码及其返回结果，如下图：
@@ -123,16 +143,16 @@ delay 3tell application "Mail"	set theMessages to messages of mailbox "wgdzlhs
 运行下面`curl`，返回的JSON里就有`id`信息（一串数字），记录下来。这个命令只用运行一次，目的只是为获取DDNS服务的用户识别ID。
 
  ``` bash
-curl https://api.dynu.com/v2/dns -H "accept: application/json" -H "API-Key: <your API Key>"
+curl https://api.dynu.com/v2/dns -H "accept: application/json" -H "API-Key: [your API Key]"
 ```
 
 3. 更新DDNS域名对应IP
 下面的命令在每次路由器发生拨号行为，并检测出WAN端口IP发生变化后，即需运行：
 
  ``` bash
-curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" \
-  -H "API-Key: <your API Key>" \
-  -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"<your new ip>\"}"
+curl https://api.dynu.com/v2/dns/[your DDNS id] -H "Content-Type: application/json" \
+  -H "API-Key: [your API Key]" \
+  -d "{\"name\":\"[your domain name]\",\"ipv4Address\":\"[your new ip]\"}"
 ```
 
 IP更新后，可用`ping`测试一番，看是否正常。具体所用的shell脚本请见文末[附录](#附录)。通过路由器[hotplug功能](#hotplug脚本)，该脚本可如上面第3步里的那样，按需运行，不用起`cron`。
@@ -145,13 +165,13 @@ IP更新后，可用`ping`测试一番，看是否正常。具体所用的shell�
 #!/bin/sh
 
 smail() {
-  echo -e "To: ${1}\nFrom: <your email>\nSubject:${2}\n\n${3}" | /usr/sbin/ssmtp ${1}
+  echo -e "To: ${1}\nFrom: [your email]\nSubject:${2}\n\n${3}" | /usr/sbin/ssmtp ${1}
 }
 
 ddns() {
-  curl https://api.dynu.com/v2/dns/<your DDNS id> -H "Content-Type: application/json" \
-    -H "API-Key: <your API Key>" \
-    -d "{\"name\":\"<your domain name>\",\"ipv4Address\":\"${1}\"}" &> /dev/null
+  curl https://api.dynu.com/v2/dns/[your DDNS id] -H "Content-Type: application/json" \
+    -H "API-Key: [your API Key]" \
+    -d "{\"name\":\"[your domain name]\",\"ipv4Address\":\"${1}\"}" &> /dev/null
 }
 
 sleep 1
@@ -162,8 +182,9 @@ fi
 new_ip=$(ifconfig pppoe-wan | sed -En 's/.*addr:([0-9.]+).*/\1/p')
 echo ${new_ip} > current_ip.log
 if [ "${new_ip}" != "${old_ip}" ]; then
-  smail <your email> "$(date +'%Y%m%d %H:%M:%S') my ip updated --from wgdzlhs-ubt" ${new_ip}
+  smail [your email] "$(date +'%Y%m%d %H:%M:%S') my ip updated --from wgdzlhs-ubt" ${new_ip}
   ddns ${new_ip}
 fi
 ```
 
+有任何疑问欢迎留言。
