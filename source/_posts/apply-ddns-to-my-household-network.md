@@ -17,7 +17,7 @@ thumbnail: /gallery/15699387480111.jpg
 想过用微信推送，实现起来也简单，有一堆公众号支持HTTP GET/POST接口往特定微信号推送消息，但这种方式安全性不高，有暴露IP的风险，也不想为这件本应自己解决的事去专门关注公众号。另外有个考量点，我希望在电脑（Mac系统）上自动更新我的家网IP，这样的话，最好能利用到苹果系统本身的自带的App，可更好的与系统联动。
 
 综合以上想法，并查阅资料后，我找到了一种还算顺畅的IP更新流程:
-路由器检测到IP变化 -> 将新IP用Email发出 -> 邮件服务器 -> 电脑接收邮件 -> 自动运行脚本更新hosts
+`路由器检测到IP变化 -> 将新IP用Email发出 -> 邮件服务器 -> 电脑接收邮件 -> 自动运行脚本更新hosts`
 
 ### 检测IP变化
 #### cron定时任务
@@ -62,7 +62,7 @@ mailhub=smtp.163.com
 rewriteDomain=163.com
 hostname=openwrt
 FromLineOverride=YES
-AuthUser=wgdzlh
+AuthUser=[your username]
 AuthPass=[your password]
 UseTLS=YES
 UseSTARTTLS=YES
