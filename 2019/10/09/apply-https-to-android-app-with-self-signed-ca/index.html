@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+<meta name="generator" content="Hexo 4.2.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>使用自签名证书给安卓APP提供HTTPS后端服务 - 独倾江月</title>
+    <meta name="description" content="在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用Https安全链接。本文介绍了一种使用自签名证书的安卓Https链接方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用自签名证书给安卓APP提供HTTPS后端服务">
+<meta property="og:url" content="https://wgdzlh.github.io/2019/10/09/apply-https-to-android-app-with-self-signed-ca/index.html">
+<meta property="og:site_name" content="独倾江月">
+<meta property="og:description" content="在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用Https安全链接。本文介绍了一种使用自签名证书的安卓Https链接方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wgdzlh.github.io/gallery/https_vs_http.jpg">
+<meta property="article:published_time" content="2019-10-09T11:57:52.000Z">
+<meta property="article:modified_time" content="2019-10-10T15:57:53.000Z">
+<meta property="article:author" content="独倾江月">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wgdzlh.github.io/gallery/https_vs_http.jpg">
+<link rel="icon" href="/images/avatar.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+<link rel="stylesheet" href="/css/goup.css">
+    <script async="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+                <img src="/images/logo.png" alt="使用自签名证书给安卓APP提供HTTPS后端服务" height="28">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item"
+                href="/">主页</a>
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                <a class="navbar-item"
+                href="/about">关于</a>
+            </div>
+            <div class="navbar-end">
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main">
+<div class="card">
+    <div class="card-image">
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="/gallery/https_vs_http.jpg" alt="使用自签名证书给安卓APP提供HTTPS后端服务">
+        </span>
+    </div>
+    <div class="card-content article ">
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-09T11:57:52.000Z"><i class="far fa-calendar-alt"></i>&nbsp;2019-10-09</time>
+                <time class="level-item has-text-grey is-hidden-mobile" datetime="2019-10-10T15:57:53.000Z"><i class="far fa-calendar-check"></i>&nbsp;2019-10-10</time>
+                <div class="level-item">
+                <i class="far fa-folder-open"></i>&nbsp;
+                <a class="has-link-grey -link" href="/categories/%E5%AE%89%E5%8D%93%E5%BC%80%E5%8F%91/">安卓开发</a>
+                </div>
+                <span class="level-item has-text-grey">
+                    <i class="far fa-clock"></i>&nbsp;
+                    5 分钟 读完 (大约 767 个字)
+                </span>
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>&nbsp;
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+            </div>
+        </div>
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+                使用自签名证书给安卓APP提供HTTPS后端服务
+        </h1>
+        <div class="content">
+            <html><head></head><body><p>在安卓开发中，我们希望可以用更安全的方式连接后端服务，且近几年较新的安卓Framework也一直在引导开发者使用Https安全链接。本文介绍了一种使用自签名证书的安卓Https链接方式。</p>
+<a id="more"></a>
+<h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>关于Http与Https的区别，大家应该很熟悉，就不再赘述了。苹果iOS在好几年前就已强推Https，而安卓这边紧随其后，默认开发配置下也要求App只能使用Https，虽说目前最新版（10.0）仍然可以在manifest里设置一下规避掉，也只是过渡期的权宜之计罢了。</p>
+<p>Https其实大家都想上，但证书问题却是个老大难。一方面，后端服务器可能没有域名，只有个IP，无法自由申请免费证书（可以<a href="https://segmentfault.com/a/1190000018370382" target="_blank" rel="noopener">给IP申请证书</a>，但有很多限制，且可能收费）。另一方面，自签名证书很方便，但却没经过授权机构根证书签名，默认情况下得不到安卓系统的信任。因而，市面上仍有大量App使用不安全的Http协议连接Web后端服务。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>通过多方搜索查找，综合<a href="https://developer.android.com/training/articles/security-ssl#UnknownCa" target="_blank" rel="noopener">官方文档</a>，及<a href="https://jebware.com/blog/?p=340" target="_blank" rel="noopener">相关博客</a>，可以使用以下两步，验证自签名CA证书。另外，需注意生成证书时，应加入Subject Alternative Name参数，域名或者IP都行，具体参考这个<a href="https://stackoverflow.com/a/8744717/8578416" target="_blank" rel="noopener">SO回答</a>。</p>
+<p>PS：下面代码中的<code>server.cer</code>证书放入项目assets文件夹，获取方式可以参考<a href="https://jebware.com/blog/?p=340" target="_blank" rel="noopener">相关博客</a>，但不需要转为pem格式。</p>
+<h3 id="自定义证书验证器TrustManager"><a href="#自定义证书验证器TrustManager" class="headerlink" title="自定义证书验证器TrustManager"></a>自定义证书验证器TrustManager</h3><figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">package</span> your.project.io;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="hljs-keyword">import</span> java.security.KeyStore;</span><br><span class="line"><span class="hljs-keyword">import</span> java.security.cert.Certificate;</span><br><span class="line"><span class="hljs-keyword">import</span> java.security.cert.CertificateFactory;</span><br><span class="line"><span class="hljs-keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> javax.net.ssl.SSLContext;</span><br><span class="line"><span class="hljs-keyword">import</span> javax.net.ssl.SSLSocketFactory;</span><br><span class="line"><span class="hljs-keyword">import</span> javax.net.ssl.TrustManager;</span><br><span class="line"><span class="hljs-keyword">import</span> javax.net.ssl.TrustManagerFactory;</span><br><span class="line"><span class="hljs-keyword">import</span> javax.net.ssl.X509TrustManager;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">import</span> your.project.Application;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTrustManager</span> </span>{</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> SSLSocketFactory mSSLSocketFactory;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> X509TrustManager mTrustManager;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">static</span> {</span><br><span class="line">        <span class="hljs-keyword">try</span> {</span><br><span class="line">            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());</span><br><span class="line">            keyStore.load(<span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);</span><br><span class="line">            <span class="hljs-keyword">try</span> (BufferedInputStream bis = <span class="hljs-keyword">new</span> BufferedInputStream(</span><br><span class="line">                    Application.getApplicationContext().getAssets().open(<span class="hljs-string">"ca/server.cer"</span>))) {</span><br><span class="line">                Certificate ca = CertificateFactory.getInstance(<span class="hljs-string">"X.509"</span>).generateCertificate(bis);</span><br><span class="line">                keyStore.setCertificateEntry(<span class="hljs-string">"ca"</span>, ca);</span><br><span class="line">            }</span><br><span class="line">            TrustManagerFactory trustManagerFactory = TrustManagerFactory</span><br><span class="line">                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());</span><br><span class="line">            trustManagerFactory.init(keyStore);</span><br><span class="line">            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();</span><br><span class="line">            <span class="hljs-keyword">if</span> (trustManagers.length != <span class="hljs-number">1</span> || !(trustManagers[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> X509TrustManager)) {</span><br><span class="line">                <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"Unexpected default trust managers:"</span></span><br><span class="line">                        + Arrays.toString(trustManagers));</span><br><span class="line">            }</span><br><span class="line">            mTrustManager = (X509TrustManager) trustManagers[<span class="hljs-number">0</span>];</span><br><span class="line">            SSLContext sslContext = SSLContext.getInstance(<span class="hljs-string">"TLS"</span>);</span><br><span class="line">            sslContext.init(<span class="hljs-keyword">null</span>, trustManagers, <span class="hljs-keyword">null</span>);</span><br><span class="line">            mSSLSocketFactory = sslContext.getSocketFactory();</span><br><span class="line">        } <span class="hljs-keyword">catch</span> (Exception e) {</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">static</span> SSLSocketFactory <span class="hljs-title">getSocketFactory</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        <span class="hljs-keyword">return</span> mSSLSocketFactory;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">static</span> X509TrustManager <span class="hljs-title">getTrustManager</span><span class="hljs-params">()</span> </span>{</span><br><span class="line">        <span class="hljs-keyword">return</span> mTrustManager;</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="在连接代理中使用定制的TrustManager"><a href="#在连接代理中使用定制的TrustManager" class="headerlink" title="在连接代理中使用定制的TrustManager"></a>在连接代理中使用定制的TrustManager</h3><p>在Http连接代理中设定<code>TrustManager</code>，这里以okhttp3第三方库的HttpClient为例：</p>
+<figure class="highlight java hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> OkHttpClient client = <span class="hljs-keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">        .sslSocketFactory(MyTrustManager.getSocketFactory(), MyTrustManager.getTrustManager())</span><br><span class="line">        <span class="hljs-comment">// not safe, should specify subject alt name in server's ca.</span></span><br><span class="line">        <span class="hljs-comment">//.hostnameVerifier((hostname, session) -> Constants.Net.HOST.equals(hostname))</span></span><br><span class="line">        .connectTimeout(<span class="hljs-number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">        .writeTimeout(<span class="hljs-number">20</span>, TimeUnit.SECONDS)</span><br><span class="line">        .readTimeout(<span class="hljs-number">20</span>, TimeUnit.SECONDS).build();</span><br></pre></td></tr></tbody></table></figure>
+<p>不出意外的话，App端应该可以正常用Https访问你的Web服务了。</p>
+</body></html>
+        </div>
+        <ul class="post-copyright">
+        <li><strong>本文标题：</strong><a href="https://wgdzlh.github.io/2019/10/09/apply-https-to-android-app-with-self-signed-ca/">使用自签名证书给安卓APP提供HTTPS后端服务</a></li>
+        <li><strong>本文作者：</strong><a href="https://wgdzlh.github.io">独倾江月</a></li>
+        <li><strong>本文链接：</strong><a href="https://wgdzlh.github.io/2019/10/09/apply-https-to-android-app-with-self-signed-ca/">https://wgdzlh.github.io/2019/10/09/apply-https-to-android-app-with-self-signed-ca/</a></li>
+        <li><strong>发布时间：</strong>2019-10-09</li>
+        <li><strong>版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</li>
+        </ul>
+        <hr style="height:1px;margin:1rem 0">
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <i class="fas fa-tags has-text-grey"></i>&nbsp;
+                    <a class="has-link-grey -link" href="/tags/Android/" rel="tag">Android</a>,&nbsp;<a class="has-link-grey -link" href="/tags/Java/" rel="tag">Java</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.jpg" alt="支付宝"></div>
+</a>
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.jpg" alt="微信"></div>
+</a>
+        </div>
+    </div>
+</div>
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/03/apply-wol-to-my-household-server/">
+                <span class="level-item">为家庭服务器设置WOL</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: 'd03700b1e6bea548272f',
+        clientSecret: 'ccf5fdc4e0b568fe09cb503aad93439db8b96945',
+        id: '3b600f2521bbe1d12e422e2980e251b0',
+        repo: 'wgdzlh.github.io',
+        owner: 'wgdzlh',
+        admin: "wgdzlh",
+        createIssueManually: false,
+        distractionFreeMode: false
+    })
+    gitalk.render('comment-container')
+</script>
+    </div>
+</div>
+</div>
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="is-rounded" src="/images/avatar.png" alt="独倾江月">
+                    </figure>
+                    <p class="is-size-4 is-block">
+                        独倾江月
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <nav class="level menu-list is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/archives/">
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/categories/">
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        2
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/tags/">
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        12
+                    </p>
+                </a>
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="card widget column-left is-sticky" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#需求背景">
+        <span class="has-mr-6">1</span>
+        <span>需求背景</span>
+        </a></li><li>
+        <a class="is-flex" href="#解决方法">
+        <span class="has-mr-6">2</span>
+        <span>解决方法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#自定义证书验证器TrustManager">
+        <span class="has-mr-6">2.1</span>
+        <span>自定义证书验证器TrustManager</span>
+        </a></li><li>
+        <a class="is-flex" href="#在连接代理中使用定制的TrustManager">
+        <span class="has-mr-6">2.2</span>
+        <span>在连接代理中使用定制的TrustManager</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+        <div class="column-right-shadow is-hidden-widescreen ">
+        </div>
+</div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                    <img src="/images/logo.png" alt="使用自签名证书给安卓APP提供HTTPS后端服务" height="28">
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 独倾江月&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                </p>
+            </div>
+            <div class="level-end">
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        <i class="fab fa-creative-commons"></i>
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        <i class="fab fa-creative-commons-by"></i>
+                    </a>
+                </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+<script src="/js/animation.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" target="_blank" rel="noopener">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/goup.js" defer></script>
+<script src="/js/main.js" defer></script>
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+</body>
+</html>

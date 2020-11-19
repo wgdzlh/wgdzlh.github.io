@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+<meta name="generator" content="Hexo 4.2.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>为家庭服务器设置WOL - 独倾江月</title>
+    <meta name="description" content="在完成家庭组网后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷性方面的应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为家庭服务器设置WOL">
+<meta property="og:url" content="https://wgdzlh.github.io/2019/10/03/apply-wol-to-my-household-server/index.html">
+<meta property="og:site_name" content="独倾江月">
+<meta property="og:description" content="在完成家庭组网后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷性方面的应用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wgdzlh.github.io/gallery/triStates.png">
+<meta property="article:published_time" content="2019-10-02T17:21:12.000Z">
+<meta property="article:modified_time" content="2019-10-06T11:57:13.000Z">
+<meta property="article:author" content="独倾江月">
+<meta property="article:tag" content="家庭组网">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="WOL">
+<meta property="article:tag" content="iptables">
+<meta property="article:tag" content="TCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wgdzlh.github.io/gallery/triStates.png">
+<link rel="icon" href="/images/avatar.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+<link rel="stylesheet" href="/css/goup.css">
+    <script async="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+                <img src="/images/logo.png" alt="为家庭服务器设置WOL" height="28">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item"
+                href="/">主页</a>
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                <a class="navbar-item"
+                href="/about">关于</a>
+            </div>
+            <div class="navbar-end">
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main">
+<div class="card">
+    <div class="card-image">
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="/gallery/triStates.png" alt="为家庭服务器设置WOL">
+        </span>
+    </div>
+    <div class="card-content article ">
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-10-02T17:21:12.000Z"><i class="far fa-calendar-alt"></i>&nbsp;2019-10-03</time>
+                <time class="level-item has-text-grey is-hidden-mobile" datetime="2019-10-06T11:57:13.000Z"><i class="far fa-calendar-check"></i>&nbsp;2019-10-06</time>
+                <div class="level-item">
+                <i class="far fa-folder-open"></i>&nbsp;
+                <a class="has-link-grey -link" href="/categories/%E6%8A%98%E8%85%BE/">折腾</a>
+                </div>
+                <span class="level-item has-text-grey">
+                    <i class="far fa-clock"></i>&nbsp;
+                    21 分钟 读完 (大约 3176 个字)
+                </span>
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>&nbsp;
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+            </div>
+        </div>
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+                为家庭服务器设置WOL
+        </h1>
+        <div class="content">
+            <html><head></head><body><p>在完成<a href="/2019/09/29/how-do-i-construct-my-household-network/">家庭组网</a>后，剩下的工作就是各种优化了。其中应重点关注的，当属家庭网络设备运行的经济性，以及使用的方便性了。本文主要介绍WOL（Wake On LAN）在提高设备经济便捷性方面的应用。</p>
+<a id="more"></a>
+<h2 id="问题的引出"><a href="#问题的引出" class="headerlink" title="问题的引出"></a>问题的引出</h2><p>最近，在我重新启用家里的台式机，作为开发团队的<code>GitLab</code>服务器时，一个问题很快显现出来。</p>
+<p>首先，之所以需要将家里的电脑当作服务器来用，主要有以下几点原因：</p>
+<ul>
+<li>穷，买不起配置较好的VPS（<code>GitLab</code>对配置有要求）</li>
+<li>家里路由器有公网IP，且已<a href="/2019/10/01/apply-ddns-to-my-household-network/">配好DDNS</a></li>
+<li>台式机闲置已久，系统是<code>Ubuntu 1604</code>，可充当服务器</li>
+<li>偶尔需要登录台式机，跑点测试，玩一下<code>TensorFlow</code>啥的（台式机有老独显，可加点速）</li>
+</ul>
+<p>但，毕竟是过时硬件 + Linux，整个系统功耗有点高（八九十瓦至少），7*24运行的话，不仅会产生可观电费，机器也会快速积灰、折旧。同时经过观察，这台服务器使用频率非常低，一天半小时顶破天。</p>
+<p>于是，要合理的利用，最好可以让服务器在不用的时候自动进入睡眠待机（挂起状态，此时绝大部分硬件不工作，功耗极低），而需要用的时候可以远程唤醒。</p>
+<h2 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h2><h3 id="Ubuntu自动睡眠"><a href="#Ubuntu自动睡眠" class="headerlink" title="Ubuntu自动睡眠"></a>Ubuntu自动睡眠</h3><p>先从看似简单的下手。在<code>Ubuntu</code>系统中，需要设置在不活动一段时间后，自动进入睡眠状态，大家可能觉得这不是一个问题：在设置里的电源选项中设一下就好了嘛。</p>
+<p>可是，经过实际操作检验，这样很可能不会成功，至少在我的这台<code>Ubuntu 1604</code>老系统上没用。即使我设置了在不活动10分钟后就挂起，但不管系统处于idle状态多久，它就是不睡。</p>
+<p>经过分析，我发觉应该是系统中运行的某些服务阻止了电源选项发挥作用，如<code>GitLab</code>后台运行的一堆东西，数据库、<code>nginx</code>、<code>Web</code>服务器等，其中只要有一个让电脑不能主动进入睡眠状态，系统就不会在规定时间休息了。而一旦停掉GitLab所有服务，系统就可恢复正常。只是，停服务是不可能停的，这次停了某一个，下次再起别的什么服务后若又出问题，就又要重复排查。</p>
+<h4 id="强制睡眠"><a href="#强制睡眠" class="headerlink" title="强制睡眠"></a>强制睡眠</h4><p>如何解决自动睡眠问题？针对诸如此类系统方面的glitch，个人一贯追求简单直接的处理方法，不愿花太多精力去一一排查，追根究底。借用一位前同事的说法，<em>我们毕竟是开发，不是运维</em>，可能绕了一大圈，最后最有效的方法就是最简单直接的那个。</p>
+<p>所以，既然不能利用系统自身的自动睡眠，那就手动强制睡眠吧：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl <span class="hljs-built_in">suspend</span></span><br></pre></td></tr></tbody></table></figure>
+<p>通过<code>sudo</code>提权后，系统当然会乖乖去睡了。注意，可以睡眠不代表也能正常从睡眠中恢复，这时应测试一下唤醒情况。</p>
+<p>PS：若你和我一样用的是N家的独显，在唤醒时如果发现系统当机了，内核panic，有可能是显卡驱动造成的，试着重装一下最新兼容驱动或许能解决。<br>PPS：N卡驱动可能只在图形界面可以正常睡眠唤醒，如果将启动等级设为命令行界面，即<code>text mode</code>，不运行<code>X server</code>（少跑几十个进程），唤醒时依然会当机黑屏。这个至今没有妥善解决，后面若找到方法会分享出来（很有可能这是现有驱动本身的依赖特点，根本没有解决方法，除非发生小概率事件：未来新驱动支持<code>text mode</code>的睡眠唤醒）。</p>
+<h4 id="自动判断idle"><a href="#自动判断idle" class="headerlink" title="自动判断idle"></a>自动判断idle</h4><p>系统可以通过命令强制睡眠后，下一步就是如何在合适的时候运行这个命令了。</p>
+<p>理想情况是，系统能自动判断前台或后台没有正在运行的用户程序，也没有远程用户在使用其提供的网络服务，且这种状态持续了可设定的一段时间，就认为系统正处于空闲，可以安全进入睡眠了。只是，前面已提到，设置中的电源选项在很多情况下不起作用。进一步的搜索表明，这里的电源选项仅能判断前台GUI界面中是否有用户活动，即鼠标或键盘事件，而不能探测后台中的活动，故其作用面非常有限。</p>
+<p>有网友分享过自己的经验，也有一些开源脚本在特定情形可利用，但经过分析，判断系统idle状态其实并不复杂，可以用shell脚本加定时任务自行解决，不需要借助其他软件，下面贴出代码：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">user_proc_num=$(ps -fU [your username] | grep -vE <span class="hljs-string">"systemd|sd-pam|ps -fU|wc -l"</span> | wc -l)</span><br><span class="line"><span class="hljs-keyword">if</span> [ <span class="hljs-variable">${user_proc_num}</span> -gt 1 ]; <span class="hljs-keyword">then</span></span><br><span class="line">  active=<span class="hljs-string">"true"</span></span><br><span class="line"><span class="hljs-keyword">else</span></span><br><span class="line">  net_con_num=$(netstat -ant | grep -E <span class="hljs-string">"[service socket 1]|[service socket 2]|..."</span> | grep -v <span class="hljs-string">"LISTEN"</span> | wc -l)</span><br><span class="line">  <span class="hljs-keyword">if</span> [ <span class="hljs-variable">${net_con_num}</span> -gt 0 ]; <span class="hljs-keyword">then</span></span><br><span class="line">    active=<span class="hljs-string">"true"</span></span><br><span class="line">  <span class="hljs-keyword">fi</span></span><br><span class="line"><span class="hljs-keyword">fi</span></span><br><span class="line"></span><br><span class="line">out_inac=<span class="hljs-string">"/tmp/inac_times.log"</span></span><br><span class="line"><span class="hljs-keyword">if</span> [ <span class="hljs-string">"<span class="hljs-variable">${active}</span>"</span> = <span class="hljs-string">"true"</span> ]; <span class="hljs-keyword">then</span></span><br><span class="line">  <span class="hljs-built_in">echo</span> 0 > <span class="hljs-variable">${out_inac}</span></span><br><span class="line"><span class="hljs-keyword">else</span></span><br><span class="line">  inac_times=$(cat <span class="hljs-variable">${out_inac}</span> 2>/dev/null || <span class="hljs-built_in">echo</span> 0)</span><br><span class="line">  <span class="hljs-keyword">if</span> [ <span class="hljs-variable">${inac_times}</span> -ge 10 ]; <span class="hljs-keyword">then</span></span><br><span class="line">    <span class="hljs-built_in">echo</span> 0 > <span class="hljs-variable">${out_inac}</span></span><br><span class="line">    systemctl <span class="hljs-built_in">suspend</span></span><br><span class="line">  <span class="hljs-keyword">else</span></span><br><span class="line">    <span class="hljs-built_in">echo</span> $(( <span class="hljs-variable">${inac_times}</span> + 1 )) > <span class="hljs-variable">${out_inac}</span></span><br><span class="line">  <span class="hljs-keyword">fi</span></span><br><span class="line"><span class="hljs-keyword">fi</span></span><br></pre></td></tr></tbody></table></figure>
+<p>以上代码保存为<code>auto_suspend.sh</code>（注意修改其中的<code>service socket</code>为需要判断空闲状态的TCP端口），加可执行权限，在<code>cron</code>中起定时任务（<code>root</code>用户的<code>crontab</code>，因为<code>systemctl suspend</code>这句须提权）：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo crontab -l</span><br><span class="line">*/1 * * * * /some_path/auto_suspend.sh</span><br></pre></td></tr></tbody></table></figure>
+<p>即每分钟运行一次，判断空闲状态。结合脚本中第18行里的<code>10</code>，可看到这里设置的是，若连续十分钟内，<code>10</code>次都未探测到系统有活动的进程或TCP端口，则认为系统处于空闲，可强制进入睡眠。</p>
+<h3 id="路由器唤醒Ubuntu"><a href="#路由器唤醒Ubuntu" class="headerlink" title="路由器唤醒Ubuntu"></a>路由器唤醒Ubuntu</h3><h4 id="手动唤醒"><a href="#手动唤醒" class="headerlink" title="手动唤醒"></a>手动唤醒</h4><p>在设置自动唤醒前，可先测试一下手动唤醒。测试之前，需打开Ubuntu网卡的<code>WOL</code>功能：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ethtool -s eno1 wol g</span><br></pre></td></tr></tbody></table></figure>
+<p><em>注：其中<code>eno1</code>改为需设置<code>WOL</code>的网卡名。</em><br>然后看下是否配置成功：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo ethtool eno1</span><br></pre></td></tr></tbody></table></figure>
+<p>输出有<code>Wake-on: g</code>，就说明已成功设置<code>WOL</code>。<br>在Ubuntu上<code>systemctl suspend</code>后，SSH登入路由器，运行以下命令：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ etherwake -b -i [LAN interface name] [ubuntu MAC address]</span><br></pre></td></tr></tbody></table></figure>
+<p>测试是否可以成功唤醒Ubuntu。<br><em>注：除了这种<code>etherwake</code>命令方式，还有其他各种WOL工具可以使用。若从外网唤醒，需要在路由器上配置好端口转发，但此种转发方式的弊端是，只能在Ubuntu直接连在路由器某LAN网口上，且配置好静态<code>ARP</code>绑定的条件下才行，否则会因<code>ARP</code>老化而无法成功转发magic唤醒包（例如像<a href="/2019/09/29/how-do-i-construct-my-household-network/">这里</a>的网络拓扑，路由器与Ubuntu Desktop PC之间有其他网桥设备）。所以，最好直接从路由器发出广播型的magic包，不管内网的二层拓扑怎样，Ubuntu都能正常收到而被唤醒。故上面<code>etherwake</code>命令里有<code>-b</code>参数，即发出<code>broadcast</code>型magic包。</em></p>
+<h4 id="自动唤醒"><a href="#自动唤醒" class="headerlink" title="自动唤醒"></a>自动唤醒</h4><p>手动唤醒测试通过后，下一步就是将其自动化。如何在需要连接Ubuntu时，自动将其唤醒？简单的端口转发当然无法做到这个，我们需要的是一种路由器可以察觉到的连接信号。经过搜索，我找到了一种很好的解决流程：</p>
+<ol>
+<li>某客户端在外网发出连接Ubuntu的TCP第一次握手（<code>SYN=1 ACK=0</code>）；</li>
+<li>路由器<code>iptables</code>转发时，识别出该数据包，发出特定信号；</li>
+<li>路由器上某进程接收到该信号，运行<code>etherwake</code>命令，发出二层广播magic包唤醒Ubuntu。</li>
+</ol>
+<h5 id="识别TCP第一次握手"><a href="#识别TCP第一次握手" class="headerlink" title="识别TCP第一次握手"></a>识别TCP第一次握手</h5><p>利用<code>iptables</code>监听跳转，可识别特定TCP第一次握手包，发出相应信号。这里的<em>信号</em>是写入特殊字符串开头的系统日志，其他进程可以通过实时读取日志来识别这个<em>信号</em>。之所以采取这种迂回方式，主要原因是<code>iptables</code>无法直接启动其他命令或脚本。</p>
+<p>根据OpenWrt官网提供的<code>iptables</code>设置样例，我们的监听跳转命令如下：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># create a new chain for logging forwarded packets</span></span><br><span class="line">iptables -N forwarding_log_chain</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># append to openwrt forwarding_rule chain (which generally has nothing in it)</span></span><br><span class="line">iptables -A forwarding_rule -j forwarding_log_chain</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># add log rules all HTTP/S SYN (can use --syn instead of --tcp-flags) and FIN-ACK events</span></span><br><span class="line">iptables -A forwarding_log_chain -p tcp -d [LAN ip of the server] --tcp-flags ALL SYN -j LOG --<span class="hljs-built_in">log</span>-prefix <span class="hljs-string">"MY_PC_SYN:"</span></span><br></pre></td></tr></tbody></table></figure>
+<p>这些命令可以写入OpenWrt的防火墙自定义规则中，在防火墙每次启动时自动运行。</p>
+<h5 id="发出广播唤醒包"><a href="#发出广播唤醒包" class="headerlink" title="发出广播唤醒包"></a>发出广播唤醒包</h5><p>在路由器上使用<code>nohup</code>另起一个后台进程，实时读取系统日志，发现有连接Ubuntu的TCP第一次握手信号，就发magic唤醒包。当然，通过优化发包逻辑，可以适当限制一下发包频率，避免给LAN传太多二层广播（虽说这里的广播包很小，占用带宽极小，但有优化总是好的）。</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup logread -f | awk <span class="hljs-string">'/MY_PC_SYN/ {system("/root/auto_wol.sh")}'</span> &</span><br></pre></td></tr></tbody></table></figure>
+<p>这个<code>nohup</code>任务可以写在<code>/etc/rc.local</code>里，随系统启动。其中的<code>/root/auto_wol.sh</code>脚本内容如下：</p>
+<figure class="highlight bash hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">outfile=<span class="hljs-string">"/tmp/autowake.tmp"</span></span><br><span class="line">last_time=$(date +%s -r <span class="hljs-variable">${outfile}</span> 2>/dev/null || <span class="hljs-built_in">echo</span> 0)</span><br><span class="line">interval=$(( $(date +%s) - <span class="hljs-variable">${last_time}</span> ))</span><br><span class="line">epoch=$(cat <span class="hljs-variable">${outfile}</span> 2>/dev/null || <span class="hljs-built_in">echo</span> 0)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">if</span> [ <span class="hljs-variable">${epoch}</span> -eq 0 ]; <span class="hljs-keyword">then</span></span><br><span class="line">  <span class="hljs-keyword">if</span> [ <span class="hljs-variable">${interval}</span> -le 6 ]; <span class="hljs-keyword">then</span></span><br><span class="line">    etherwake -b -i [LAN interface name] [ubuntu MAC address]</span><br><span class="line">    <span class="hljs-built_in">echo</span> 2 > <span class="hljs-variable">${outfile}</span></span><br><span class="line">  <span class="hljs-keyword">else</span></span><br><span class="line">    <span class="hljs-built_in">echo</span> 1 > <span class="hljs-variable">${outfile}</span></span><br><span class="line">  <span class="hljs-keyword">fi</span></span><br><span class="line"><span class="hljs-keyword">else</span></span><br><span class="line">  <span class="hljs-keyword">if</span> [ <span class="hljs-variable">${interval}</span> -le 6 ]; <span class="hljs-keyword">then</span></span><br><span class="line">    <span class="hljs-keyword">if</span> [ <span class="hljs-variable">${epoch}</span> -eq 1 ]; <span class="hljs-keyword">then</span></span><br><span class="line">      etherwake -b -i [LAN interface name] [ubuntu MAC address]</span><br><span class="line">      <span class="hljs-built_in">echo</span> 2 > <span class="hljs-variable">${outfile}</span></span><br><span class="line">    <span class="hljs-keyword">fi</span></span><br><span class="line">  <span class="hljs-keyword">elif</span> [ <span class="hljs-variable">${epoch}</span> -eq 2 ]; <span class="hljs-keyword">then</span></span><br><span class="line">    <span class="hljs-built_in">echo</span> 1 > <span class="hljs-variable">${outfile}</span></span><br><span class="line">  <span class="hljs-keyword">else</span></span><br><span class="line">    <span class="hljs-built_in">echo</span> 0 > <span class="hljs-variable">${outfile}</span></span><br><span class="line">  <span class="hljs-keyword">fi</span></span><br><span class="line"><span class="hljs-keyword">fi</span></span><br></pre></td></tr></tbody></table></figure>
+<p>可以看到，第16行设置了6秒内，最多只会发出一个广播唤醒包。</p>
+<p>同时，我们的脚本还可以防IP端口扫描器的扫描骚扰，避免无谓的唤醒（通过检查系统日志，发现几个来自荷兰的IP隔几个小时就对我的路由器各端口进行扫描，疑似想通过漏洞侵入系统）。</p>
+<p>这里具体的实现原理很简单，IP扫描器为了提高效率，每个<code>IP:SOCKET</code>套接字一般只会发出一个TCP握手包，没响应就扫下一个，而正常的TCP访问更<em>执着</em>，第一个握手包没响应，一两秒内会发出另一个。利用两者区别，可以故意设计为只响应连续的握手包，而对孤立的包置之不理。所以，脚本的状态就有了<code>0、1、2</code>这三个，三者间的转化关系如下：</p>
+<div align="center">
+<p><img src="/gallery/triStates.png" alt="唤醒脚本三重态"></p>
+</div>
+<h4 id="几点思考"><a href="#几点思考" class="headerlink" title="几点思考"></a>几点思考</h4><ol>
+<li><p>这样的TCP连接惰性处理，在能抵抗一次IP套接字扫描的同时，也多少增加了服务器的响应时延。经过外网访问测试，服务器从睡眠中自动唤醒，没有惰性处理和有惰性处理，相隔1-2s，在总时延10s左右的情况下，可忽略不计。</p>
+</li>
+<li><p>引入WOL后，所有的网络服务大多情况下均会附加一个较长的10s初始时延，对用户体验有点影响，但在节省大量资源的利益面前，这点影响同样可忽略不计了。</p>
+</li>
+</ol>
+<p>至此，WOL问题已得到解决。</p>
+</body></html>
+        </div>
+        <ul class="post-copyright">
+        <li><strong>本文标题：</strong><a href="https://wgdzlh.github.io/2019/10/03/apply-wol-to-my-household-server/">为家庭服务器设置WOL</a></li>
+        <li><strong>本文作者：</strong><a href="https://wgdzlh.github.io">独倾江月</a></li>
+        <li><strong>本文链接：</strong><a href="https://wgdzlh.github.io/2019/10/03/apply-wol-to-my-household-server/">https://wgdzlh.github.io/2019/10/03/apply-wol-to-my-household-server/</a></li>
+        <li><strong>发布时间：</strong>2019-10-03</li>
+        <li><strong>版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</li>
+        </ul>
+        <hr style="height:1px;margin:1rem 0">
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <i class="fas fa-tags has-text-grey"></i>&nbsp;
+                    <a class="has-link-grey -link" href="/tags/TCP/" rel="tag">TCP</a>,&nbsp;<a class="has-link-grey -link" href="/tags/WOL/" rel="tag">WOL</a>,&nbsp;<a class="has-link-grey -link" href="/tags/iptables/" rel="tag">iptables</a>,&nbsp;<a class="has-link-grey -link" href="/tags/shell/" rel="tag">shell</a>,&nbsp;<a class="has-link-grey -link" href="/tags/%E5%AE%B6%E5%BA%AD%E7%BB%84%E7%BD%91/" rel="tag">家庭组网</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.jpg" alt="支付宝"></div>
+</a>
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.jpg" alt="微信"></div>
+</a>
+        </div>
+    </div>
+</div>
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/09/apply-https-to-android-app-with-self-signed-ca/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">使用自签名证书给安卓APP提供HTTPS后端服务</span>
+            </a>
+        </div>
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/10/01/apply-ddns-to-my-household-network/">
+                <span class="level-item">为家庭网络设置DDNS</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: 'd03700b1e6bea548272f',
+        clientSecret: 'ccf5fdc4e0b568fe09cb503aad93439db8b96945',
+        id: '25f4924d7f65fe32f14ff14c7a500bfc',
+        repo: 'wgdzlh.github.io',
+        owner: 'wgdzlh',
+        admin: "wgdzlh",
+        createIssueManually: false,
+        distractionFreeMode: false
+    })
+    gitalk.render('comment-container')
+</script>
+    </div>
+</div>
+</div>
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="is-rounded" src="/images/avatar.png" alt="独倾江月">
+                    </figure>
+                    <p class="is-size-4 is-block">
+                        独倾江月
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <nav class="level menu-list is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/archives/">
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/categories/">
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        2
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/tags/">
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        12
+                    </p>
+                </a>
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="card widget column-left is-sticky" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#问题的引出">
+        <span class="has-mr-6">1</span>
+        <span>问题的引出</span>
+        </a></li><li>
+        <a class="is-flex" href="#解决过程">
+        <span class="has-mr-6">2</span>
+        <span>解决过程</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#Ubuntu自动睡眠">
+        <span class="has-mr-6">2.1</span>
+        <span>Ubuntu自动睡眠</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#强制睡眠">
+        <span class="has-mr-6">2.1.1</span>
+        <span>强制睡眠</span>
+        </a></li><li>
+        <a class="is-flex" href="#自动判断idle">
+        <span class="has-mr-6">2.1.2</span>
+        <span>自动判断idle</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#路由器唤醒Ubuntu">
+        <span class="has-mr-6">2.2</span>
+        <span>路由器唤醒Ubuntu</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#手动唤醒">
+        <span class="has-mr-6">2.2.1</span>
+        <span>手动唤醒</span>
+        </a></li><li>
+        <a class="is-flex" href="#自动唤醒">
+        <span class="has-mr-6">2.2.2</span>
+        <span>自动唤醒</span>
+        </a></li><li>
+        <a class="is-flex" href="#几点思考">
+        <span class="has-mr-6">2.2.3</span>
+        <span>几点思考</span>
+        </a></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+        <div class="column-right-shadow is-hidden-widescreen ">
+        </div>
+</div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                    <img src="/images/logo.png" alt="为家庭服务器设置WOL" height="28">
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 独倾江月&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                </p>
+            </div>
+            <div class="level-end">
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        <i class="fab fa-creative-commons"></i>
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        <i class="fab fa-creative-commons-by"></i>
+                    </a>
+                </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+<script src="/js/animation.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" target="_blank" rel="noopener">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/goup.js" defer></script>
+<script src="/js/main.js" defer></script>
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+</body>
+</html>

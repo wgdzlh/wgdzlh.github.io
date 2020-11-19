@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html  lang="zh">
+<head>
+    <meta charset="utf-8" />
+<meta name="generator" content="Hexo 4.2.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>我的家庭网络架设日志 - 独倾江月</title>
+    <meta name="description" content="家里的自建网络在近三年经历了多次升级改造，目前已稳定下来，并正常运行一年有余。多次改造过程中，搜索、学习了不少网络底层知识，现在大致记录一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我的家庭网络架设日志">
+<meta property="og:url" content="https://wgdzlh.github.io/2019/09/29/how-do-i-construct-my-household-network/index.html">
+<meta property="og:site_name" content="独倾江月">
+<meta property="og:description" content="家里的自建网络在近三年经历了多次升级改造，目前已稳定下来，并正常运行一年有余。多次改造过程中，搜索、学习了不少网络底层知识，现在大致记录一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://wgdzlh.github.io/gallery/%E6%88%91%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png">
+<meta property="article:published_time" content="2019-09-29T15:35:08.000Z">
+<meta property="article:modified_time" content="2019-09-30T10:42:08.000Z">
+<meta property="article:author" content="独倾江月">
+<meta property="article:tag" content="家庭组网">
+<meta property="article:tag" content="VLAN">
+<meta property="article:tag" content="光猫">
+<meta property="article:tag" content="路由器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://wgdzlh.github.io/gallery/%E6%88%91%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png">
+<link rel="icon" href="/images/avatar.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+<style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+<link rel="stylesheet" href="/css/goup.css">
+    <script async="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+                <img src="/images/logo.png" alt="我的家庭网络架设日志" height="28">
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item"
+                href="/">主页</a>
+                <a class="navbar-item"
+                href="/archives">归档</a>
+                <a class="navbar-item"
+                href="/categories">分类</a>
+                <a class="navbar-item"
+                href="/tags">标签</a>
+                <a class="navbar-item"
+                href="/about">关于</a>
+            </div>
+            <div class="navbar-end">
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-9-widescreen has-order-2 column-main">
+<div class="card">
+    <div class="card-image">
+        <span  class="image is-7by1">
+            <img class="thumbnail" src="/gallery/%E6%88%91%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png" alt="我的家庭网络架设日志">
+        </span>
+    </div>
+    <div class="card-content article ">
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-09-29T15:35:08.000Z"><i class="far fa-calendar-alt"></i>&nbsp;2019-09-29</time>
+                <time class="level-item has-text-grey is-hidden-mobile" datetime="2019-09-30T10:42:08.000Z"><i class="far fa-calendar-check"></i>&nbsp;2019-09-30</time>
+                <div class="level-item">
+                <i class="far fa-folder-open"></i>&nbsp;
+                <a class="has-link-grey -link" href="/categories/%E6%8A%98%E8%85%BE/">折腾</a>
+                </div>
+                <span class="level-item has-text-grey">
+                    <i class="far fa-clock"></i>&nbsp;
+                    19 分钟 读完 (大约 2793 个字)
+                </span>
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>&nbsp;
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+            </div>
+        </div>
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+                我的家庭网络架设日志
+        </h1>
+        <div class="content">
+            <html><head></head><body><p>家里的自建网络在近三年经历了多次升级改造，目前已稳定下来，并正常运行一年有余。多次改造过程中，搜索、学习了不少网络底层知识，现在大致记录一下。</p>
+<a id="more"></a>
+<h2 id="硬件介绍"><a href="#硬件介绍" class="headerlink" title="硬件介绍"></a>硬件介绍</h2><p>先看看目前我家里的网络拓扑图吧：<br><img src="/gallery/%E6%88%91%E7%9A%84%E5%AE%B6%E5%BA%AD%E7%BD%91%E7%BB%9C%E6%8B%93%E6%89%91%E5%9B%BE.png" alt="我的家庭网络拓扑图"></p>
+<ul>
+<li>图中的光猫是自行更换的（电商平台有售，8245C2改H版的也行，网上有<a href="https://post.smzdm.com/p/738418/" target="_blank" rel="noopener">更换教程</a>），主要看中了其转发性能和LAN四口千兆，运行也远比电信送的渣渣稳定可靠，三年时间中没有出过任何故障，而周围邻居用的总在掉线。电信在近期对其网络设备进行了升级，接收到的光信号又升了几个dB（-20dB -> -14dB），就更稳了。现在只希望能尽快提供IPV6吧。</li>
+<li>路由器+无线AP用的是原思科子品牌Linksys的 WRT1900ACS。WRT系列在路由器固件开源史上可谓无出其右，对OpenWrt等开源固件的支持非常好，这是我最看重的地方。目前这个路由器用的固件是我自行编译的，虽说各种社区里的网友共享固件也能满足需求，但我有新版<del>强迫症</del>情结，也不喜欢路由器里有用不到的功能，所以就自己定制了。这里强烈推荐一下某大神的<a href="https://github.com/coolsnowwolf/lede" target="_blank" rel="noopener">OpenWRT编译仓库</a>，该repo集成了多种路由器的编译配置，喜欢的学习一下怎么弄吧。</li>
+<li>IPTV机顶盒是电信送的，看直播方便些。可能你已看出来一个细节：IPTV没有接到光猫上，而是通过了路由器，具体怎么实现的下面在VLAN小节里会介绍。</li>
+<li>无线WIFI方面，目前家里其实是主用5G的，速度快干扰少，小户型的信号衰减也没有那么厉害，完全堪用。2.4G给老设备和智能家居设备使用。</li>
+<li>NAS是用一台2009年的老笔记本来充当的，10年了舍不得丢，换过SSD，只用AC电源，希望还能再撑10年。系统仍用Win 7，7*24运行中，异常稳定。没刷NAS专用系统，感觉Win完全够用，也很方便，要啥有啥（也许是因为太懒，换系统毕竟有成本啊）。</li>
+</ul>
+<h2 id="家庭VLAN设置"><a href="#家庭VLAN设置" class="headerlink" title="家庭VLAN设置"></a>家庭VLAN设置</h2><p>熟悉网络架构的同学应该清楚，VLAN是二层（数据链路层）协议，对传统LAN进行了进一步的分割，可以在同一物理网络上架设多个虚拟的LAN。光网改造后，各电信服务商在家庭接入网这块，也全面应用了VLAN技术，主要是对远程光猫控制、互联网接入、IPTV、IP电话等业务进行了VLAN隔离，保证QOS。较新的光猫设备都支持自行设置VLAN（一些型号可能需要破解超密，本文不介绍这方面的知识，请善用搜索），而一般的家庭路由器对VLAN的支持可能并不充分，需要刷固件。<br>细心的你可能也看到上面拓扑图中的一个细节，光猫和路由器之间的有线连接是双向箭头的，和其他的不一样。其实这里就是用到了VLAN，具体如下。</p>
+<h3 id="从需求说起"><a href="#从需求说起" class="headerlink" title="从需求说起"></a>从需求说起</h3><p>我家当时装修时，没考虑到家庭路由的位置问题，犯了个设计上的错误：所有房间的网口都接到玄关的弱电箱里了（这种情况应该是挺普遍的吧）。后来组网时发现，如果用光猫拨号，NAS、台式机、路由器平行接入光猫，很可能造成光猫转发压力大，过热不稳定（更换光猫前），也不便于台式机通过路由器科学上网；而如果光猫桥接，在路由器PPPoE拨号（可避免多一层网络，多一层转发），NAS和台式机又要有线接入，这样使用传统方法组网，路由就必须放在弱电箱那里（不走明线的话），离WIFI使用者远，信号衰减厉害。所以，路由器最好能放在位于家庭中心的客厅电视柜上，利用那里唯一的网口连接光猫，而NAS和台式机通过光猫连接路由器，如拓扑图中那样。</p>
+<h3 id="现有方案"><a href="#现有方案" class="headerlink" title="现有方案"></a>现有方案</h3><p>通过搜索，网友分享的方案主要有以下两个（搜索<strong>单臂路由</strong>）：</p>
+<blockquote>
+<p>方案1：在弱电箱中加入一个带VLAN功能的交换机，光猫、路由器、NAS、台式机都接入这个交换机，通过VLAN分割流量。</p>
+</blockquote>
+<blockquote>
+<p>方案2: 利用光猫本身的VLAN交换功能，对WAN和LAN流量进行分割。</p>
+</blockquote>
+<p>本着<del>穷逼</del>一贯的极简设计、物尽其用原则，当然选方案2啦。</p>
+<h3 id="光猫VLAN设置"><a href="#光猫VLAN设置" class="headerlink" title="光猫VLAN设置"></a>光猫VLAN设置</h3><h4 id="光猫WLAN配置"><a href="#光猫WLAN配置" class="headerlink" title="光猫WLAN配置"></a>光猫WLAN配置</h4><p><img src="/gallery/15698166127923.jpg" alt></p>
+<ul>
+<li>首先是内网VLAN设置，这里分配了VLAN-1给光猫、路由器、NAS和台式机，先绑定了NAS和台式机接入的LAN1、LAN3端口；LAN2为路由器接入端口，需要绑定多个VLAN（即trunk口），故不勾选；LAN4无设备接入，也不勾选。</li>
+</ul>
+<p><img src="/gallery/15698170131525.jpg" alt></p>
+<ul>
+<li>WAN外网桥接设置，分配的VLAN ID为电信局方下发的，一定要配置对。换光猫前要从老猫那里记录下来（另外要记录的还有其他业务的VLAN ID和设备LOID，即逻辑ID）。这里没有绑定任何端口，会在后面进行trunk绑定。</li>
+</ul>
+<p><img src="/gallery/15698174875130.jpg" alt></p>
+<ul>
+<li>IPTV设置，同样，这里的VLAN ID为电信指定好的，不能更改为其他的ID。IPTV会用到组播，设置一下所在地区的组播VLAN。</li>
+</ul>
+<h4 id="光猫LAN设置"><a href="#光猫LAN设置" class="headerlink" title="光猫LAN设置"></a>光猫LAN设置</h4><p><img src="/gallery/15698176862757.jpg" alt></p>
+<ul>
+<li>光猫LAN端口工作模式，这里只需要勾选LAN2端口，LAN1和LAN3已做过绑定，所以默认就已勾选。</li>
+</ul>
+<p><img src="/gallery/15698180048699.jpg" alt></p>
+<ul>
+<li>光猫LAN IP设置，地址设为路由器的内网IP段中的某个未使用的静态地址，掩码保持一致，这样可以方便路由器内网设备登录到处于桥接模式的光猫。</li>
+</ul>
+<p><img src="/gallery/15698183127247.jpg" alt></p>
+<ul>
+<li>光猫DHCP设置，因光猫只作桥接，无路由转发职责，关闭所有DHCP功能即可。</li>
+</ul>
+<h4 id="VLAN-trunk端口设置"><a href="#VLAN-trunk端口设置" class="headerlink" title="VLAN trunk端口设置"></a>VLAN trunk端口设置</h4><p><img src="/gallery/15698185865091.jpg" alt></p>
+<ul>
+<li><strong>重点</strong>来了，在光猫<em>路由</em>设置栏这里，需对LAN2端口进行多重VLAN绑定，上图中同时绑定了三组，分别为：<ul>
+<li>路由器侧WAN／光猫侧WAN</li>
+<li>路由器侧IPTV／光猫侧IPTV</li>
+<li>路由器侧LAN／光猫侧LAN</li>
+</ul>
+</li>
+</ul>
+<p>至此光猫VLAN已设置完成。</p>
+<h3 id="路由器VLAN设置"><a href="#路由器VLAN设置" class="headerlink" title="路由器VLAN设置"></a>路由器VLAN设置</h3><h4 id="路由器交换机设置"><a href="#路由器交换机设置" class="headerlink" title="路由器交换机设置"></a>路由器交换机设置</h4><p><img src="/gallery/15698192286427.jpg" alt></p>
+<ul>
+<li><p>此步同样<strong>关键</strong>。如图，在路由器的<em>交换机</em>设置栏中，对<code>VLAN ID 1-3</code>进行如下分配：</p>
+<ul>
+<li>内网<code>1</code>绑定网卡eth0，以及除接有IPTV机顶盒的LAN3外的所有端口（包括WAN端口）；</li>
+<li>外网<code>2</code>绑定网卡eth1，以及WAN端口；</li>
+<li>IPTV网<code>3</code>绑定接有IPTV机顶盒的LAN3，及WAN端口。</li>
+</ul>
+<p>其中，可以看到，因WAN端口为trunk口，与连接的光猫处于多个VLAN中，故必须设为打VLAN ID标签的模式<code>tagged</code>，以区分不同流量，而其他端口连接的设备已离开VLAN，故设为<code>untagged</code>。另外有个小细节：IPTV所在的VLAN <code>3</code> 未分配到网卡上，因为其只需二层转发，不用动IP层，不划到LAN中，防火墙能少处理一点流量吧。</p>
+</li>
+</ul>
+<h4 id="路由器接口设置"><a href="#路由器接口设置" class="headerlink" title="路由器接口设置"></a>路由器接口设置</h4><p><img src="/gallery/15698200530052.jpg" alt></p>
+<ul>
+<li>WAN接口这里，在<em>物理设置</em>中须绑定<code>eth1.2</code>接口（即<em>交换机</em>中的<code>eth1</code>网卡和VLAN <code>2</code>），然后在<em>基本设置</em>中设定好PPPoE拨号即可，此时可测试一下能否拨号成功。</li>
+</ul>
+<p><img src="/gallery/15698206303338.jpg" alt></p>
+<ul>
+<li>如图，LAN接口同样须设置接口绑定，只是绑定的是<code>eth0.1</code>，还有两个无线WIFI，可开启组播（主要为了IPTV，不开应该也行，毕竟IPTV不在LAN中）。</li>
+</ul>
+<p><img src="/gallery/15698217111214.jpg" alt></p>
+<ul>
+<li>LAN基本设置，注意IP地址和掩码与上面光猫LAN侧的对应，保持在同一内网网段即可。</li>
+</ul>
+<p><img src="/gallery/15698212854478.jpg" alt></p>
+<ul>
+<li>LAN接口的DHCP服务器设置中，开始IP可设置到高地址段，低地址段预留给手动配置静态IP的设备，如光猫的LAN地址、NAS和台式机。另外提一句，路由器的DHCP协议包一般情况下无法跨越光猫，即使设置好了VLAN和网段（可能需要光猫支持LAN侧的DHCP中继才行吧），故NAS和台式机是手动配置的静态IP，同时也便于内网访问及做静态ARP绑定。</li>
+</ul>
+<h2 id="问题与思考"><a href="#问题与思考" class="headerlink" title="问题与思考"></a>问题与思考</h2><ol>
+<li>单臂路由是否影响网速？<ul>
+<li>对于这个问题，我上网找过相关资料，发现在家用环境下，网速基本无影响。这里要理解的是<code>1000baseT 全双工</code>这个概念，全双工与单工的区别就在于，其可支持网络两端同时以标称速度进行收发包（上下行带宽均可达到1000M），而单工要达到标称速度只能一端发，另一端收，不能两端同时收发，否则速度就会减半。所以即使用到了单臂路由，非极端情况（典型家用情境），内网带宽扔可保持全千兆，与非单臂路由情况基本无差，完全够用。当然，这里的分析都是基于内网各条线路、接口均能达到千兆双工的前提，若达不到，建议有条件就升级线路，用好点的线（超五类即可）+ 质量过关的水晶头和网口面板，自己动手把关，避免在物理层出现降速瓶颈。</li>
+</ul>
+</li>
+</ol>
+<p>至此，所有设置已完成，可以欢快的上网了。<br>接下来，关于家庭网络搭建，会继续介绍关于DDNS和WOL的内容，干货多多，敬请期待。</p>
+</body></html>
+        </div>
+        <ul class="post-copyright">
+        <li><strong>本文标题：</strong><a href="https://wgdzlh.github.io/2019/09/29/how-do-i-construct-my-household-network/">我的家庭网络架设日志</a></li>
+        <li><strong>本文作者：</strong><a href="https://wgdzlh.github.io">独倾江月</a></li>
+        <li><strong>本文链接：</strong><a href="https://wgdzlh.github.io/2019/09/29/how-do-i-construct-my-household-network/">https://wgdzlh.github.io/2019/09/29/how-do-i-construct-my-household-network/</a></li>
+        <li><strong>发布时间：</strong>2019-09-29</li>
+        <li><strong>版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</li>
+        </ul>
+        <hr style="height:1px;margin:1rem 0">
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <i class="fas fa-tags has-text-grey"></i>&nbsp;
+                    <a class="has-link-grey -link" href="/tags/VLAN/" rel="tag">VLAN</a>,&nbsp;<a class="has-link-grey -link" href="/tags/%E5%85%89%E7%8C%AB/" rel="tag">光猫</a>,&nbsp;<a class="has-link-grey -link" href="/tags/%E5%AE%B6%E5%BA%AD%E7%BB%84%E7%BD%91/" rel="tag">家庭组网</a>,&nbsp;<a class="has-link-grey -link" href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/" rel="tag">路由器</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="/images/alipay.jpg" alt="支付宝"></div>
+</a>
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="/images/wechat.jpg" alt="微信"></div>
+</a>
+        </div>
+    </div>
+</div>
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/10/01/apply-ddns-to-my-household-network/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">为家庭网络设置DDNS</span>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+<div id="comment-container"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+    var gitalk = new Gitalk({
+        clientID: 'd03700b1e6bea548272f',
+        clientSecret: 'ccf5fdc4e0b568fe09cb503aad93439db8b96945',
+        id: '7b4a9cdccf29778ac1809339dc35579c',
+        repo: 'wgdzlh.github.io',
+        owner: 'wgdzlh',
+        admin: "wgdzlh",
+        createIssueManually: false,
+        distractionFreeMode: false
+    })
+    gitalk.render('comment-container')
+</script>
+    </div>
+</div>
+</div>
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    <figure class="image is-128x128 has-mb-6">
+                        <img class="is-rounded" src="/images/avatar.png" alt="独倾江月">
+                    </figure>
+                    <p class="is-size-4 is-block">
+                        独倾江月
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <nav class="level menu-list is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/archives/">
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/categories/">
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        2
+                    </p>
+                </a>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <a href="/tags/">
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        12
+                    </p>
+                </a>
+            </div>
+        </nav>
+    </div>
+</div>
+<div class="card widget column-left is-sticky" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#硬件介绍">
+        <span class="has-mr-6">1</span>
+        <span>硬件介绍</span>
+        </a></li><li>
+        <a class="is-flex" href="#家庭VLAN设置">
+        <span class="has-mr-6">2</span>
+        <span>家庭VLAN设置</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#从需求说起">
+        <span class="has-mr-6">2.1</span>
+        <span>从需求说起</span>
+        </a></li><li>
+        <a class="is-flex" href="#现有方案">
+        <span class="has-mr-6">2.2</span>
+        <span>现有方案</span>
+        </a></li><li>
+        <a class="is-flex" href="#光猫VLAN设置">
+        <span class="has-mr-6">2.3</span>
+        <span>光猫VLAN设置</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#光猫WLAN配置">
+        <span class="has-mr-6">2.3.1</span>
+        <span>光猫WLAN配置</span>
+        </a></li><li>
+        <a class="is-flex" href="#光猫LAN设置">
+        <span class="has-mr-6">2.3.2</span>
+        <span>光猫LAN设置</span>
+        </a></li><li>
+        <a class="is-flex" href="#VLAN-trunk端口设置">
+        <span class="has-mr-6">2.3.3</span>
+        <span>VLAN trunk端口设置</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#路由器VLAN设置">
+        <span class="has-mr-6">2.4</span>
+        <span>路由器VLAN设置</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#路由器交换机设置">
+        <span class="has-mr-6">2.4.1</span>
+        <span>路由器交换机设置</span>
+        </a></li><li>
+        <a class="is-flex" href="#路由器接口设置">
+        <span class="has-mr-6">2.4.2</span>
+        <span>路由器接口设置</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#问题与思考">
+        <span class="has-mr-6">3</span>
+        <span>问题与思考</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+        <div class="column-right-shadow is-hidden-widescreen ">
+        </div>
+</div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                    <img src="/images/logo.png" alt="我的家庭网络架设日志" height="28">
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 独倾江月&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a
+                        href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                </p>
+            </div>
+            <div class="level-end">
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        <i class="fab fa-creative-commons"></i>
+                    </a>
+                </p>
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        <i class="fab fa-creative-commons-by"></i>
+                    </a>
+                </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+<script>
+var IcarusThemeSettings = {
+    article: {
+        highlight: {
+            clipboard: true,
+            fold: 'unfolded'
+        }
+    }
+};
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+<script src="/js/animation.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+<script src="/js/gallery.js" defer></script>
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" target="_blank" rel="noopener">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/goup.js" defer></script>
+<script src="/js/main.js" defer></script>
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么..." />
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+</body>
+</html>
